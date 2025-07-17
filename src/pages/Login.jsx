@@ -21,7 +21,7 @@ const Login = () => {
 
     try {
       // O authService agora retorna { token, user }
-      const { token, user } = await authService.login(formData);
+      const { token } = await authService.login(formData);
       
       // Armazena o token e os dados do usuário
       localStorage.setItem('token', token);
