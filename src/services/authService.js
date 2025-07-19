@@ -41,6 +41,11 @@ const authService = {
     localStorage.removeItem('user');
     // Lógica adicional de logout, se necessário
   },
+
+  isAuthenticated: () => {
+    const token = localStorage.getItem('token');
+    return token ? true : false;
+  },
 };
 
 export default authService;
