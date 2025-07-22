@@ -171,8 +171,14 @@ export default function Clients() {
                           )}
                         </td>
                         <td className="py-3 px-4 whitespace-nowrap text-right text-sm font-medium">
+                          <Link
+                            to={`/clients/${client.id}`}
+                            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded-lg shadow-md transition duration-300 mr-2"
+                          >
+                            Ver Detalhes
+                          </Link>
                           <button
-                            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded-lg shadow-md transition duration-300"
+                            className="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded-lg shadow-md transition duration-300"
                             onClick={() =>
                               alert(
                                 `Iniciar atendimento para ${client.name}`
