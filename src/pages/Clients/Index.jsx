@@ -27,16 +27,11 @@ export default function Clients() {
 
   // Normaliza os nomes dos animais independente do formato
   const getAnimalNames = (client) => {
-    if (!client) return [];
-    const raw = client.animals;
-    if (!raw) return [];
-    if (Array.isArray(raw) && raw.length > 0) {
-      // Se já for array de strings
-      if (typeof raw[0] === 'string') return raw;
-      // Se for array de objetos {name: "..."}
-      return raw.map((a) => a?.name).filter(Boolean);
-    }
-    return [];
+    if (!client || !client.animals) return [];
+    return client.animals.map(animal => ({
+      id: animal.id || animal.animal_id,
+      name: animal.name
+    }));
   };
 
     const [currentPage, setCurrentPage] = useState(1);
@@ -46,8 +41,8 @@ export default function Clients() {
     ? clients.filter((client) => {
         const term = searchTerm.toLowerCase();
         const nameMatch = client.name?.toLowerCase().includes(term);
-        const animalMatch = getAnimalNames(client).some((n) =>
-          n.toLowerCase().includes(term)
+        const animalMatch = getAnimalNames(client).some((a) =>
+          a.name.toLowerCase().includes(term)
         );
         return nameMatch || animalMatch;
       })
@@ -67,10 +62,10 @@ export default function Clients() {
 
   return (
     <div className="container mx-auto p-4">
-      <nav className="text-sm text-gray-500 mb-4">
+      <nav className="text-sm text-lightText mb-4">
         <ol className="list-none p-0 inline-flex">
           <li className="flex items-center">
-            <Link to="/dashboard" className="text-blue-600 hover:underline">Dashboard</Link>
+            <Link to="/dashboard" className="text-primary hover:underline">Dashboard</Link>
             <span className="mx-2">/</span>
           </li>
           <li className="flex items-center">
@@ -80,10 +75,10 @@ export default function Clients() {
       </nav>
 
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Lista de Clientes</h1>
+        <h1 className="text-3xl font-bold text-text">Lista de Clientes</h1>
         <div className="flex space-x-4">
           <button
-            className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300"
+            className="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300"
             onClick={() => navigate('/clients/new')}
           >
             Novo Cliente
@@ -95,13 +90,13 @@ export default function Clients() {
         <input
           type="text"
           placeholder="Pesquisar clientes ou animais..."
-          className="w-full sm:w-2/3 p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full sm:w-2/3 p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-text"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           disabled={loading}
         />
         <div className="flex items-center space-x-2">
-          <label htmlFor="itemsPerPage" className="text-gray-700">Itens por página:</label>
+          <label htmlFor="itemsPerPage" className="text-lightText">Itens por página:</label>
           <select
             id="itemsPerPage"
             value={itemsPerPage}
@@ -109,7 +104,7 @@ export default function Clients() {
               setItemsPerPage(Number(e.target.value));
               setCurrentPage(1); // Reset to first page when items per page changes
             }}
-            className="p-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-text"
             disabled={loading}
           >
             <option value="5">5</option>
@@ -120,39 +115,39 @@ export default function Clients() {
         </div>
       </div>
 
-      <div className="bg-white shadow-md rounded-lg p-6 min-h-[120px]">
-        {loading && <p className="text-gray-500 italic">Carregando...</p>}
+      <div className="bg-card shadow-md rounded-lg p-6 min-h-[120px]">
+        {loading && <p className="text-lightText italic">Carregando...</p>}
 
         {!loading && errorMsg && (
-          <p className="text-red-600">{errorMsg}</p>
+          <p className="text-red-500">{errorMsg}</p>
         )}
 
         {!loading && !errorMsg && filteredClients.length === 0 && (
-          <p className="text-gray-600">Nenhum cliente encontrado.</p>
+          <p className="text-lightText">Nenhum cliente encontrado.</p>
         )}
 
         {!loading && !errorMsg && filteredClients.length > 0 && (
           <>
             <div className="overflow-x-auto">
-              <table className="min-w-full bg-white">
+              <table className="min-w-full bg-card">
                 <thead>
                   <tr>
-                    <th className="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="py-2 px-4 border-b border-border bg-background text-left text-xs font-semibold text-lightText uppercase tracking-wider">
                       Nome
                     </th>
-                    <th className="py-2 px-4 border-b border-gray-200 bg-gray-50 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
+                    <th className="py-2 px-4 border-b border-border bg-background text-left text-xs font-semibold text-lightText uppercase tracking-wider">
                       Animais
                     </th>
-                    <th className="py-2 px-4 border-b border-gray-200 bg-gray-50"></th>
+                    <th className="py-2 px-4 border-b border-border bg-background"></th>
                   </tr>
                 </thead>
                 <tbody>
                   {currentClients.map((client) => {
                     const animals = getAnimalNames(client);
                     return (
-                      <tr key={client.id} className="hover:bg-gray-50">
+                      <tr key={client.id} className="hover:bg-background">
                         <td className="py-3 px-4 whitespace-nowrap">
-                          <p className="text-lg font-semibold text-gray-800">
+                          <p className="text-lg font-semibold text-text">
                             {client.name}
                           </p>
                         </td>
@@ -160,12 +155,13 @@ export default function Clients() {
                           {animals.length > 0 && (
                             <div className="flex flex-wrap gap-2">
                               {animals.map((animal, index) => (
-                                <span
-                                  key={index}
-                                  className="bg-blue-100 text-blue-800 text-xs font-medium px-2.5 py-0.5 rounded-full"
+                                <Link
+                                  key={animal.id || index}
+                                  to={`/clients/${client.id}/animals/${animal.id}`}
+                                  className="bg-primary-light text-primary-dark text-xs font-medium px-2.5 py-0.5 rounded-full hover:underline"
                                 >
-                                  {animal}
-                                </span>
+                                  {animal.name}
+                                </Link>
                               ))}
                             </div>
                           )}
@@ -173,12 +169,12 @@ export default function Clients() {
                         <td className="py-3 px-4 whitespace-nowrap text-right text-sm font-medium">
                           <Link
                             to={`/clients/${client.id}`}
-                            className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-1 px-3 rounded-lg shadow-md transition duration-300 mr-2"
+                            className="bg-secondary hover:bg-secondary-dark text-white font-bold py-1 px-3 rounded-lg shadow-md transition duration-300 mr-2"
                           >
                             Ver Detalhes
                           </Link>
                           <button
-                            className="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded-lg shadow-md transition duration-300"
+                            className="bg-primary hover:bg-primary-dark text-white font-bold py-1 px-3 rounded-lg shadow-md transition duration-300"
                             onClick={() =>
                               alert(
                                 `Iniciar atendimento para ${client.name}`
@@ -201,7 +197,7 @@ export default function Clients() {
                 <button
                   onClick={() => paginate(currentPage - 1)}
                   disabled={currentPage === 1}
-                  className="px-4 py-2 border rounded-lg text-gray-700 bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+                  className="px-4 py-2 border border-border rounded-lg text-lightText bg-card hover:bg-background disabled:opacity-50"
                 >
                   Anterior
                 </button>
@@ -209,10 +205,10 @@ export default function Clients() {
                   <button
                     key={number + 1}
                     onClick={() => paginate(number + 1)}
-                    className={`px-4 py-2 border rounded-lg ${
+                    className={`px-4 py-2 border border-border rounded-lg ${
                       currentPage === number + 1
-                        ? "bg-blue-500 text-white"
-                        : "text-gray-700 bg-gray-100 hover:bg-gray-200"
+                        ? "bg-primary text-white"
+                        : "text-lightText bg-card hover:bg-background"
                     }`}
                   >
                     {number + 1}
@@ -221,7 +217,7 @@ export default function Clients() {
                 <button
                   onClick={() => paginate(currentPage + 1)}
                   disabled={currentPage === totalPages}
-                  className="px-4 py-2 border rounded-lg text-gray-700 bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+                  className="px-4 py-2 border border-border rounded-lg text-lightText bg-card hover:bg-background disabled:opacity-50"
                 >
                   Próximo
                 </button>

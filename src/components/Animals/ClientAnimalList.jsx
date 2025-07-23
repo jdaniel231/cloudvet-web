@@ -20,10 +20,10 @@ const ClientAnimalList = ({ animals, clientId }) => {
   if (!animals || animals.length === 0) {
     return (
       <div className="text-center py-4">
-        <p className="text-gray-600 mb-4">Nenhum animal encontrado para este cliente.</p>
+        <p className="text-lightText mb-4">Nenhum animal encontrado para este cliente.</p>
         <Link
           to={`/clients/${clientId}/animals/new`}
-          className="inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300"
+          className="inline-block bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300"
         >
           Adicionar Animal
         </Link>
@@ -36,7 +36,7 @@ const ClientAnimalList = ({ animals, clientId }) => {
       <div className="flex justify-end mb-4">
         <Link
           to={`/clients/${clientId}/animals/new`}
-          className="inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300"
+          className="inline-block bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300"
         >
           Adicionar Animal
         </Link>
@@ -45,20 +45,20 @@ const ClientAnimalList = ({ animals, clientId }) => {
         {animals.map((animal) => (
           <div
             key={animal.id}
-            className="bg-white rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg"
+            className="bg-card rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg"
           >
             <div className="p-4 flex flex-col items-center">
-              <div className="w-20 h-20 rounded-full bg-gray-100 flex items-center justify-center mb-3 border-2 border-gray-200 text-4xl text-gray-600">
+              <div className="w-20 h-20 rounded-full bg-background flex items-center justify-center mb-3 border-2 border-border text-4xl text-primary">
                 <FontAwesomeIcon icon={speciesIcons[animal.species?.toLowerCase()] || speciesIcons.default} />
               </div>
-              <h3 className="text-xl font-semibold text-gray-800 mb-1">{animal.name}</h3>
-              <p className="text-sm text-gray-600 mb-2">
+              <h3 className="text-xl font-semibold text-text mb-1">{animal.name}</h3>
+              <p className="text-sm text-lightText mb-2">
                 {animal.species} {animal.breed ? `- ${animal.breed}` : ''}
               </p>
               {/* Exemplo de botão de ação - você pode adicionar mais ou remover */}
               <Link
                 to={`/clients/${clientId}/animals/${animal.id}`}
-                className="inline-block bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300"
+                className="inline-block bg-secondary hover:bg-secondary-dark text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300"
               >
                 Ver Detalhes
               </Link>
