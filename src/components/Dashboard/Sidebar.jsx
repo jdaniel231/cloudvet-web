@@ -6,7 +6,7 @@ const Sidebar = ({ sidebarOpen, activeTab, setActiveTab, menuItems }) => (
     <div className="p-6">
       <div className="flex items-center space-x-3">
         <div className="bg-blue-500 p-2 rounded-lg">
-          <Heart className="h-6 w-6 text-white" />
+          {/* <Heart className="h-6 w-6 text-white" /> */}
         </div>
         {sidebarOpen && (
           <div>

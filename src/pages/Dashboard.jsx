@@ -5,22 +5,22 @@ import { PlusCircle, HospitalIcon, UserRound, Dog, DollarSign, Eye } from 'lucid
 import AppointmentCard from '../components/Dashboard/AppointmentCard';
 
 const StatCard = ({ title, value, icon, color }) => (
-  <div className={`bg-white rounded-xl shadow-sm border p-6 flex items-center space-x-4 ${color}`}>
+  <div className={`bg-card rounded-xl shadow-sm border border-border p-6 flex items-center space-x-4`}>
     <div className="p-3 rounded-full bg-opacity-20">
       {icon}
     </div>
     <div>
-      <p className="text-sm font-medium text-gray-500">{title}</p>
-      <p className="text-2xl font-bold text-gray-900">{value}</p>
+      <p className="text-sm font-medium text-lightText">{title}</p>
+      <p className="text-2xl font-bold text-text">{value}</p>
     </div>
   </div>
 );
 
 const PatientCard = ({ patient, getStatusColor }) => (
-  <div className="bg-gray-50 p-4 rounded-lg border flex justify-between items-center">
+  <div className="bg-background p-4 rounded-lg border border-border flex justify-between items-center">
     <div>
-      <p className="font-semibold text-gray-800">{patient.name}</p>
-      <p className="text-sm text-gray-600">{patient.lastVisit}</p>
+      <p className="font-semibold text-text">{patient.name}</p>
+      <p className="text-sm text-lightText">{patient.lastVisit}</p>
     </div>
     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(patient.status)}`}>
       {patient.status}
@@ -30,11 +30,11 @@ const PatientCard = ({ patient, getStatusColor }) => (
 
 const QuickActionButton = ({ label, icon, path, navigate }) => (
   <button 
-    className="flex flex-col items-center justify-center p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors"
+    className="flex flex-col items-center justify-center p-4 bg-background rounded-lg hover:bg-border transition-colors"
     onClick={() => path ? navigate(path) : alert(` ${label} (Ação não implementada)`)}
   >
     {icon}
-    <span className="mt-2 text-sm font-medium text-blue-700">{label}</span>
+    <span className="mt-2 text-sm font-medium text-primary">{label}</span>
   </button>
 );
 
@@ -44,10 +44,10 @@ function Dashboard() {
   const navigate = useNavigate();
 
   const stats = [
-    { title: 'Consultas Hoje', value: '12', icon: <HospitalIcon className="h-6 w-6 text-blue-600" />, color: 'text-blue-600' },
-    { title: ' Pacientes', value: '5', icon: <UserRound className="h-6 w-6 text-green-600" />, color: 'text-green-600' },
-    { title: 'Animais', value: '8', icon: <Dog className="h-6 w-6 text-purple-600" />, color: 'text-purple-600' },
-    { title: 'Caixa de hoje', value: 'R$ 2.500', icon: <DollarSign className="h-6 w-6 text-yellow-600" />, color: 'text-yellow-600' },
+    { title: 'Consultas Hoje', value: '12', icon: <HospitalIcon className="h-6 w-6 text-primary" />, color: 'text-primary' },
+    { title: ' Pacientes', value: '5', icon: <UserRound className="h-6 w-6 text-primary" />, color: 'text-primary' },
+    { title: 'Animais', value: '8', icon: <Dog className="h-6 w-6 text-primary" />, color: 'text-primary' },
+    { title: 'Caixa de hoje', value: 'R$ 2.500', icon: <DollarSign className="h-6 w-6 text-primary" />, color: 'text-primary' },
   ];
 
   const appointments = [
@@ -64,27 +64,27 @@ function Dashboard() {
   ];
 
   const quickActions = [
-    { label: 'Novo Agendamento', icon: <PlusCircle className="h-6 w-6 text-blue-500" /> },
-    { label: 'Novo Paciente', icon: <PlusCircle className="h-6 w-6 text-green-500" />, path: '/clients/new' },
-    { label: 'Ver Relatórios', icon: <PlusCircle className="h-6 w-6 text-purple-500" /> },
-    { label: 'Gerenciar Estoque', icon: <PlusCircle className="h-6 w-6 text-yellow-500" /> },
+    { label: 'Novo Agendamento', icon: <PlusCircle className="h-6 w-6 text-primary" /> },
+    { label: 'Novo Paciente', icon: <PlusCircle className="h-6 w-6 text-primary" />, path: '/clients/new' },
+    { label: 'Ver Relatórios', icon: <PlusCircle className="h-6 w-6 text-primary" /> },
+    { label: 'Gerenciar Estoque', icon: <PlusCircle className="h-6 w-6 text-primary" /> },
   ];
 
   const getStatusColor = (status) => {
     switch (status) {
       case 'Confirmado':
       case 'Ativo':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-100 text-green-800'; // Keep green for positive status
       case 'Pendente':
       case 'Novo':
-        return 'bg-yellow-100 text-yellow-800';
+        return 'bg-yellow-100 text-yellow-800'; // Keep yellow for pending/new
       case 'Pago':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-primary-light text-primary'; // Use primary for paid
       case 'Cancelado':
       case 'Inativo':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-100 text-red-800'; // Keep red for negative status
       default:
-        return 'bg-gray-100 text-gray-800';
+        return 'bg-lightText-light text-lightText'; // Use lightText for default
     }
   };
 
@@ -108,20 +108,20 @@ function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Agendamentos */}
-        <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border">
-          <div className="p-6 border-b flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-800">Tickets</h3>
-            <button className="flex items-center space-x-2 text-blue-600 hover:text-blue-800">
+        <div className="lg:col-span-2 bg-card rounded-xl shadow-sm border border-border">
+          <div className="p-6 border-b border-border flex items-center justify-between">
+            <h3 className="text-lg font-semibold text-text">Tickets</h3>
+            <button className="flex items-center space-x-2 text-primary hover:text-primary-dark">
               <Eye className="h-4 w-4" />
               <span className="text-sm">Ver Todos</span>
             </button>
           </div>
-          <div className="grid grid-cols-5 gap-4 items-center p-4 border-b bg-gray-50">
-              <div className="col-span-1 font-semibold text-gray-600">CLIENTE</div>
-              <div className="col-span-1 font-semibold text-gray-600">DATA</div>
-              <div className="col-span-1 font-semibold text-gray-600">VALOR</div>
-              <div className="col-span-1 font-semibold text-gray-600">STATUS</div>
-              <div className="col-span-1 font-semibold text-gray-600 text-right">AÇÕES</div>
+          <div className="grid grid-cols-5 gap-4 items-center p-4 border-b border-border bg-background">
+              <div className="col-span-1 font-semibold text-lightText">CLIENTE</div>
+              <div className="col-span-1 font-semibold text-lightText">DATA</div>
+              <div className="col-span-1 font-semibold text-lightText">VALOR</div>
+              <div className="col-span-1 font-semibold text-lightText">STATUS</div>
+              <div className="col-span-1 font-semibold text-lightText text-right">AÇÕES</div>
           </div>
           <div className="p-6 space-y-4">
             {filteredAppointments.map((appt) => (
@@ -135,9 +135,9 @@ function Dashboard() {
         </div>
 
         {/* Pacientes Recentes */}
-        <div className="bg-white rounded-xl shadow-sm border">
-          <div className="p-6 border-b">
-            <h3 className="text-lg font-semibold text-gray-800">Pacientes Recentes</h3>
+        <div className="bg-card rounded-xl shadow-sm border border-border">
+          <div className="p-6 border-b border-border">
+            <h3 className="text-lg font-semibold text-text">Pacientes Recentes</h3>
           </div>
           <div className="p-6 space-y-4">
             {filteredPatients.map((p) => (
@@ -152,8 +152,8 @@ function Dashboard() {
       </div>
 
       {/* Ações rápidas */}
-      <div className="mt-6 bg-white rounded-xl shadow-sm border p-6">
-        <h3 className="text-lg font-semibold text-gray-800 mb-4">Ações Rápidas</h3>
+      <div className="mt-6 bg-card rounded-xl shadow-sm border border-border p-6">
+        <h3 className="text-lg font-semibold text-text mb-4">Ações Rápidas</h3>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           {quickActions.map((action, index) => (
             <QuickActionButton key={index} {...action} navigate={navigate} />

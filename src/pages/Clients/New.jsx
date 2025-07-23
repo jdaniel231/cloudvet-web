@@ -51,14 +51,14 @@ export default function NewClient() {
   return (
     <>
       <div className="container mx-auto p-4">
-        <nav className="text-sm text-gray-500 mb-4">
+        <nav className="text-sm text-lightText mb-4">
           <ol className="list-none p-0 inline-flex">
             <li className="flex items-center">
-              <Link to="/dashboard" className="text-blue-600 hover:underline">Dashboard</Link>
+              <Link to="/dashboard" className="text-primary hover:underline">Dashboard</Link>
               <span className="mx-2">/</span>
             </li>
             <li className="flex items-center">
-              <Link to="/clients" className="text-blue-600 hover:underline">Clientes</Link>
+              <Link to="/clients" className="text-primary hover:underline">Clientes</Link>
               <span className="mx-2">/</span>
             </li>
             <li className="flex items-center">
@@ -66,8 +66,8 @@ export default function NewClient() {
             </li>
           </ol>
         </nav>
-        <h1 className="text-3xl font-bold mb-6">Novo Cliente</h1>
-        <div className="bg-white shadow-md rounded-lg p-6">
+        <h1 className="text-3xl font-bold text-text mb-6">Novo Cliente</h1>
+        <div className="bg-card shadow-md rounded-lg p-6">
           <ClientForm onSubmit={handleSubmit} />
         </div>
       </div>

@@ -10,6 +10,7 @@ import ClientDetails from './pages/Clients/ClientDetails';
 import NewAnimal from './pages/Animals/New';
 import AnimalDetails from './pages/Animals/AnimalDetails';
 import EditClient from './pages/Clients/Edit';
+import NewAppointment from './pages/Appointments/New';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path="clients/:id/edit" element={<EditClient />} />
           <Route path="/clients/:clientId/animals/new" element={<NewAnimal />} />
           <Route path="clients/:clientId/animals/:animalId" element={<AnimalDetails />} />
+          <Route path="/clients/:clientId/animals/:animalId/appointments/new" element={<NewAppointment />} />
         </Route>
 
         {/* Rota padrão: redireciona para o dashboard se logado, senão para o login */}
