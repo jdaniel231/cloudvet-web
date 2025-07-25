@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { getClientById } from '../../services/client';
+import { getAnimalById } from '../../services/animal';
 import { Link, useNavigate } from 'react-router-dom';
 import authService from '../../services/authService';
 import { PlusCircle, HospitalIcon, UserRound, Dog, DollarSign, Eye, LayoutDashboard, Calendar, Users, Settings, Menu, LogOut, Cloud } from 'lucide-react';
@@ -42,11 +45,11 @@ const Sidebar = ({ sidebarOpen, activeTab, setActiveTab, menuItems, handleLogout
   </div>
 );
 
-const Header = ({ searchTerm, setSearchTerm }) => (
+import Breadcrumbs from '../common/Breadcrumbs';
+
+const Header = ({ searchTerm, setSearchTerm, nameMap }) => (
   <header className="bg-card shadow-sm p-4 flex items-center justify-between">
-    <h1 className="text-xl font-semibold text-text flex items-center">
-      <Cloud className="h-6 w-6 mr-2 text-primary" /> Dashboard
-    </h1>
+    <Breadcrumbs nameMap={nameMap} />
     <input
       type="text"
       placeholder="Pesquisar..."
@@ -61,7 +64,34 @@ export default function MainLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(true); // Sidebar starts open
   const [activeTab, setActiveTab] = useState('dashboard');
   const [searchTerm, setSearchTerm] = useState('');
+  const [nameMap, setNameMap] = useState({});
   const navigate = useNavigate();
+  const { clientId, animalId } = useParams();
+
+  useEffect(() => {
+    const fetchNames = async () => {
+      const newNameMap = {};
+      if (clientId) {
+        try {
+          const client = await getClientById(clientId);
+          newNameMap[clientId] = client.name;
+        } catch (error) {
+          console.error("Error fetching client name:", error);
+        }
+      }
+      if (animalId) {
+        try {
+          const animal = await getAnimalById(clientId, animalId);
+          newNameMap[animalId] = animal.name;
+        } catch (error) {
+          console.error("Error fetching animal name:", error);
+        }
+      }
+      setNameMap(newNameMap);
+    };
+
+    fetchNames();
+  }, [clientId, animalId]);
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -93,6 +123,7 @@ export default function MainLayout({ children }) {
         <Header
           searchTerm={searchTerm}
           setSearchTerm={setSearchTerm}
+          nameMap={nameMap}
         />
         <main className="p-6 overflow-y-auto h-full">
           {children}

@@ -62,18 +62,6 @@ export default function Clients() {
 
   return (
     <div className="container mx-auto p-4">
-      <nav className="text-sm text-lightText mb-4">
-        <ol className="list-none p-0 inline-flex">
-          <li className="flex items-center">
-            <Link to="/dashboard" className="text-primary hover:underline">Dashboard</Link>
-            <span className="mx-2">/</span>
-          </li>
-          <li className="flex items-center">
-            <span>Clientes</span>
-          </li>
-        </ol>
-      </nav>
-
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-text">Lista de Clientes</h1>
         <div className="flex space-x-4">

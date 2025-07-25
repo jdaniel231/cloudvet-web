@@ -16,7 +16,6 @@ const ActionButtons = ({ clientId, animalId }) => {
     { label: "Registrar Peso", color: "bg-secondary hover:bg-secondary-dark", icon: faWeight },
     { label: "Registrar Vacinas", color: "bg-primary hover:bg-primary-dark", icon: faSyringe },
     { label: "Anexos", color: "bg-accent hover:bg-accent-dark", icon: faFile },
-    { label: "Histórico Médico", color: "bg-primary hover:bg-primary-dark", icon: faHeartbeat },
     { label: "Receitas", color: "bg-secondary hover:bg-secondary-dark", icon: faPrescriptionBottle },
     { label: "Agendar Retorno", color: "bg-primary hover:bg-primary-dark", icon: faRedo },
   ];
