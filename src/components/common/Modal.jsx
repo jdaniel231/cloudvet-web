@@ -1,16 +1,48 @@
 import React from 'react';
 
-export default function Modal({ show, onClose, title, message, type, onConfirm, showCancelButton }) {
+export default function Modal({ show, onClose, title, message, type, onConfirm }) {
   if (!show) {
     return null;
   }
 
   const isSuccess = type === 'success';
-  const isWarning = type === 'warning';
-  const bgColor = isSuccess ? 'bg-green-100' : (isWarning ? 'bg-yellow-100' : 'bg-red-100');
-  const textColor = isSuccess ? 'text-green-700' : (isWarning ? 'text-yellow-700' : 'text-red-700');
-  const borderColor = isSuccess ? 'border-green-400' : (isWarning ? 'border-yellow-400' : 'border-red-400');
-  const buttonColor = isSuccess ? 'bg-blue-500 hover:bg-blue-700' : (isWarning ? 'bg-yellow-500 hover:bg-yellow-700' : 'bg-red-500 hover:bg-red-700');
+  const isError = type === 'error';
+  const isConfirmation = type === 'confirmation';
+
+  const getColors = () => {
+    switch (type) {
+      case 'success':
+        return {
+          bgColor: 'bg-green-100',
+          textColor: 'text-green-700',
+          borderColor: 'border-green-400',
+          buttonColor: 'bg-blue-500 hover:bg-blue-700',
+        };
+      case 'error':
+        return {
+          bgColor: 'bg-red-100',
+          textColor: 'text-red-700',
+          borderColor: 'border-red-400',
+          buttonColor: 'bg-red-500 hover:bg-red-700',
+        };
+      case 'confirmation':
+        return {
+          bgColor: 'bg-yellow-100',
+          textColor: 'text-yellow-700',
+          borderColor: 'border-yellow-400',
+          buttonColor: 'bg-red-500 hover:bg-red-700',
+        };
+      default:
+        return {
+          bgColor: 'bg-gray-100',
+          textColor: 'text-gray-700',
+          borderColor: 'border-gray-400',
+          buttonColor: 'bg-gray-500 hover:bg-gray-700',
+        };
+    }
+  };
+
+  const { bgColor, textColor, borderColor, buttonColor } = getColors();
 
   return (
     <div
@@ -24,26 +56,22 @@ export default function Modal({ show, onClose, title, message, type, onConfirm, 
         <div className="text-center">
           <h3 className={`text-lg leading-6 font-medium ${textColor}`}>{title}</h3>
           <div className="mt-2 px-7 py-3">
-            <p className="text-sm text-gray-500">
-              {message}
-            </p>
+            <p className="text-sm text-gray-500">{message}</p>
           </div>
           <div className="items-center px-4 py-3 flex justify-center space-x-4">
-            {showCancelButton && (
+            {isConfirmation && (
               <button
-                id="cancel-btn"
-                className="px-4 py-2 bg-gray-500 hover:bg-gray-700 text-white text-base font-medium rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-75"
                 onClick={onClose}
+                className="px-4 py-2 bg-gray-500 hover:bg-gray-700 text-white text-base font-medium rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-75"
               >
                 Cancelar
               </button>
             )}
             <button
-              id="ok-btn"
-              className={`px-4 py-2 ${buttonColor} text-white text-base font-medium rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-opacity-75 ${isSuccess ? 'focus:ring-blue-500' : (isWarning ? 'focus:ring-yellow-500' : 'focus:ring-red-500')}`}
-              onClick={onConfirm || onClose}
+              onClick={isConfirmation ? onConfirm : onClose}
+              className={`px-4 py-2 ${buttonColor} text-white text-base font-medium rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-opacity-75`}
             >
-              OK
+              {isConfirmation ? 'Confirmar' : 'OK'}
             </button>
           </div>
         </div>
