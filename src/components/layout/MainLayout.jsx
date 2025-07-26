@@ -5,6 +5,7 @@ import { getAnimalById } from '../../services/animal';
 import { Link, useNavigate } from 'react-router-dom';
 import authService from '../../services/authService';
 import { PlusCircle, HospitalIcon, UserRound, Dog, DollarSign, Eye, LayoutDashboard, Calendar, Users, Settings, Menu, LogOut, Cloud } from 'lucide-react';
+import Breadcrumbs from '../common/Breadcrumbs';
 
 const Sidebar = ({ sidebarOpen, activeTab, setActiveTab, menuItems, handleLogout, toggleSidebar }) => (
   <div className={`flex flex-col h-screen transition-all duration-300 ${sidebarOpen ? 'w-64' : 'w-20'} bg-primary text-white p-4`}>
@@ -44,8 +45,6 @@ const Sidebar = ({ sidebarOpen, activeTab, setActiveTab, menuItems, handleLogout
     </div>
   </div>
 );
-
-import Breadcrumbs from '../common/Breadcrumbs';
 
 const Header = ({ searchTerm, setSearchTerm, nameMap }) => (
   <header className="bg-card shadow-sm p-4 flex items-center justify-between">
