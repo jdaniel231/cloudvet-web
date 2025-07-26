@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCalendar, faEdit, faEye, faTrash } from '@fortawesome/free-solid-svg-icons';
 import { Link, useParams } from 'react-router-dom';
-import { getAppointments, deleteAppointment } from '../../services/appoint';
+import { getAppointments, deleteAppointment, getAppointmentById } from '../../services/appoint';
 import Modal from '../common/Modal';
+import AppointmentDetails from './AppointmentDetails';
 
 const ConsultationHistory = () => {
   const { clientId, animalId } = useParams();
@@ -11,6 +12,7 @@ const ConsultationHistory = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [modalState, setModalState] = useState({ show: false, title: '', message: '', onConfirm: null });
+  const [viewModalState, setViewModalState] = useState({ show: false, appointment: null });
 
   const fetchConsultations = async () => {
     try {
@@ -30,6 +32,16 @@ const ConsultationHistory = () => {
       fetchConsultations();
     }
   }, [clientId, animalId]);
+
+  const handleView = async (appointmentId) => {
+    try {
+      const appointmentData = await getAppointmentById(clientId, animalId, appointmentId);
+      setViewModalState({ show: true, appointment: appointmentData });
+    } catch (error) {
+      console.error('Erro ao buscar detalhes da consulta:', error);
+      setModalState({ show: true, title: 'Erro!', message: 'Ocorreu um erro ao buscar os detalhes da consulta.', onConfirm: null });
+    }
+  };
 
   const handleDelete = async (appointmentId) => {
     setModalState({
@@ -51,6 +63,10 @@ const ConsultationHistory = () => {
 
   const handleCloseModal = () => {
     setModalState({ show: false, title: '', message: '', onConfirm: null });
+  };
+
+  const handleCloseViewModal = () => {
+    setViewModalState({ show: false, appointment: null });
   };
 
   if (loading) {
@@ -95,9 +111,9 @@ const ConsultationHistory = () => {
                 <p className="text-sm text-lightText">{item.user.email}</p>
               </div>
               <div className='flex items-center gap-2'>
-                <Link to={`/clients/${clientId}/animals/${animalId}/appointments/${item.id}`} className="bg-primary hover:bg-primary-dark text-white px-3 py-1 rounded-md text-sm transition-colors">
+                <button onClick={() => handleView(item.id)} className="bg-primary hover:bg-primary-dark text-white px-3 py-1 rounded-md text-sm transition-colors">
                   <FontAwesomeIcon icon={faEye} />
-                </Link>
+                </button>
                 <Link to={`/clients/${clientId}/animals/${animalId}/appointments/${item.id}/edit`} className="bg-secondary hover:bg-secondary-dark text-white px-3 py-1 rounded-md text-sm transition-colors">
                   <FontAwesomeIcon icon={faEdit} />
                 </Link>
@@ -117,6 +133,14 @@ const ConsultationHistory = () => {
         message={modalState.message}
         type={modalState.onConfirm ? 'confirmation' : 'error'}
       />
+      <Modal show={viewModalState.show} onClose={handleCloseViewModal}>
+        <AppointmentDetails
+          appointment={viewModalState.appointment}
+          clientId={clientId}
+          animalId={animalId}
+          onClose={handleCloseViewModal}
+        />
+      </Modal>
     </div>
   );
 };

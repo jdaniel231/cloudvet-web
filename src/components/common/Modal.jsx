@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Modal({ show, onClose, title, message, type, onConfirm }) {
+export default function Modal({ show, onClose, title, message, type, onConfirm, children }) {
   if (!show) {
     return null;
   }
@@ -50,31 +50,42 @@ export default function Modal({ show, onClose, title, message, type, onConfirm }
       onClick={onClose}
     >
       <div
-        className={`relative p-5 border ${borderColor} w-96 shadow-lg rounded-md bg-white transform transition-all duration-300 ease-out scale-100 opacity-100`}
+        className={`relative p-5 border ${borderColor} w-auto shadow-lg rounded-md bg-white transform transition-all duration-300 ease-out scale-100 opacity-100`}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="text-center">
-          <h3 className={`text-lg leading-6 font-medium ${textColor}`}>{title}</h3>
-          <div className="mt-2 px-7 py-3">
-            <p className="text-sm text-gray-500">{message}</p>
+        <button onClick={onClose} className="absolute top-2 right-2 text-gray-500 hover:text-gray-800 focus:outline-none">
+          <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+        {children ? (
+          <div className="max-h-[80vh] overflow-y-auto pt-5">
+            {children}
           </div>
-          <div className="items-center px-4 py-3 flex justify-center space-x-4">
-            {isConfirmation && (
+        ) : (
+          <div className="text-center">
+            <h3 className={`text-lg leading-6 font-medium ${textColor}`}>{title}</h3>
+            <div className="mt-2 px-7 py-3">
+              <p className="text-sm text-gray-500">{message}</p>
+            </div>
+            <div className="items-center px-4 py-3 flex justify-center space-x-4">
+              {isConfirmation && (
+                <button
+                  onClick={onClose}
+                  className="px-4 py-2 bg-gray-500 hover:bg-gray-700 text-white text-base font-medium rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-75"
+                >
+                  Cancelar
+                </button>
+              )}
               <button
-                onClick={onClose}
-                className="px-4 py-2 bg-gray-500 hover:bg-gray-700 text-white text-base font-medium rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-75"
+                onClick={isConfirmation ? onConfirm : onClose}
+                className={`px-4 py-2 ${buttonColor} text-white text-base font-medium rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-opacity-75`}
               >
-                Cancelar
+                {isConfirmation ? 'Confirmar' : 'OK'}
               </button>
-            )}
-            <button
-              onClick={isConfirmation ? onConfirm : onClose}
-              className={`px-4 py-2 ${buttonColor} text-white text-base font-medium rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-opacity-75`}
-            >
-              {isConfirmation ? 'Confirmar' : 'OK'}
-            </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );
