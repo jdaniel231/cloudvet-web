@@ -13,6 +13,7 @@ import EditClient from './pages/Clients/Edit';
 import NewAppointment from './pages/Appointments/New';
 import ShowAppointment from './pages/Appointments/Show';
 import EditAppointment from './pages/Appointments/Edit';
+import NewWeight from './pages/Weights/New';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/clients/:clientId/animals/:animalId/appointments/new" element={<NewAppointment />} />
           <Route path="/clients/:clientId/animals/:animalId/appointments/:appointmentId" element={<ShowAppointment />} />
           <Route path="/clients/:clientId/animals/:animalId/appointments/:appointmentId/edit" element={<EditAppointment />} />
+          <Route path="/clients/:clientId/animals/:animalId/weights/new" element={<NewWeight />} />
         </Route>
 
         {/* Rota padrão: redireciona para o dashboard se logado, senão para o login */}

@@ -68,22 +68,24 @@ export default function Modal({ show, onClose, title, message, type, onConfirm, 
             <div className="mt-2 px-7 py-3">
               <p className="text-sm text-gray-500">{message}</p>
             </div>
-            <div className="items-center px-4 py-3 flex justify-center space-x-4">
-              {isConfirmation && (
+            {!isSuccess && (
+              <div className="items-center px-4 py-3 flex justify-center space-x-4">
+                {isConfirmation && (
+                  <button
+                    onClick={onClose}
+                    className="px-4 py-2 bg-gray-500 hover:bg-gray-700 text-white text-base font-medium rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-75"
+                  >
+                    Cancelar
+                  </button>
+                )}
                 <button
-                  onClick={onClose}
-                  className="px-4 py-2 bg-gray-500 hover:bg-gray-700 text-white text-base font-medium rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-75"
+                  onClick={isConfirmation ? onConfirm : onClose}
+                  className={`px-4 py-2 ${buttonColor} text-white text-base font-medium rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-opacity-75`}
                 >
-                  Cancelar
+                  {isConfirmation ? 'Confirmar' : 'OK'}
                 </button>
-              )}
-              <button
-                onClick={isConfirmation ? onConfirm : onClose}
-                className={`px-4 py-2 ${buttonColor} text-white text-base font-medium rounded-md w-full shadow-sm focus:outline-none focus:ring-2 focus:ring-opacity-75`}
-              >
-                {isConfirmation ? 'Confirmar' : 'OK'}
-              </button>
-            </div>
+              </div>
+            )}
           </div>
         )}
       </div>

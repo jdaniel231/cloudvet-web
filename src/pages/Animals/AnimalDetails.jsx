@@ -1,12 +1,54 @@
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import AnimalDetailsLayout from '../../components/Animals/AnimalDetailsLayout';
 import ConsultationHistory from '../../components/Appointments/ConsultationHistory';
 import ActionButtons from '../../components/Animals/ActionButtons';
+import WeightHistory from '../../components/Weights/WeightHistory';
+import { getWeights, createWeight } from '../../services/weight';
+import Modal from '../../components/common/Modal';
+import WeightsForm from '../../components/Weights/Form';
 
 const AnimalDetails = () => {
   const { clientId, animalId } = useParams();
   const navigate = useNavigate();
- 
+  const [currentView, setCurrentView] = useState('consultations');
+  const [weights, setWeights] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const fetchWeights = async () => {
+    try {
+      const weightsData = await getWeights(clientId, animalId);
+      setWeights(weightsData);
+    } catch (error) {
+      console.error("Failed to fetch weights:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchWeights();
+  }, [clientId, animalId]);
+
+  const handleAddWeight = async (formData) => {
+    try {
+      await createWeight(clientId, animalId, formData);
+      fetchWeights(); // Re-fetch weights to update the list
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Failed to create weight:", error);
+    }
+  };
+
+  const renderContent = () => {
+    switch (currentView) {
+      case 'consultations':
+        return <ConsultationHistory />;
+      case 'weights':
+        return <WeightHistory weights={weights} onAdd={() => setIsModalOpen(true)} />;
+      default:
+        return <ConsultationHistory />;
+    }
+  };
+
   return (
     <AnimalDetailsLayout>
       <div className="flex justify-end mb-4">
@@ -17,11 +59,16 @@ const AnimalDetails = () => {
           Voltar
         </button>
       </div>
-      {/* Duas colunas lado a lado */}
       <div className='grid grid-cols-1 lg:grid-cols-2 gap-6'>
-        <ConsultationHistory />
-        <ActionButtons clientId={clientId} animalId={animalId} />
+        <div>{renderContent()}</div>
+        <ActionButtons onViewChange={setCurrentView} />
       </div>
+      <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <WeightsForm 
+          onSubmit={handleAddWeight} 
+          onCancel={() => setIsModalOpen(false)} 
+        />
+      </Modal>
     </AnimalDetailsLayout>
   );
 };
