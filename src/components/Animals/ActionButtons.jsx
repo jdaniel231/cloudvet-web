@@ -1,23 +1,46 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendar, faWeight, faSyringe, faFile, faHeartbeat, faPrescriptionBottle, faRedo, faPaw } from '@fortawesome/free-solid-svg-icons';
-import { useNavigate } from 'react-router-dom';
+import { faCalendar, faWeight, faSyringe, faFile, faPrescriptionBottle, faRedo, faPaw } from '@fortawesome/free-solid-svg-icons';
 
-const ActionButtons = ({ clientId, animalId }) => {
-  const navigate = useNavigate();
+const ActionButtons = ({ onViewChange }) => {
 
   const buttons = [
     { 
-      label: "Nova Consulta", 
+      label: "Consultas", 
+      view: "consultations",
       color: "bg-primary hover:bg-primary-dark", 
       icon: faCalendar, 
-      action: () => navigate(`/clients/${clientId}/animals/${animalId}/appointments/new`)
     },
-    { label: "Registrar Peso", color: "bg-secondary hover:bg-secondary-dark", icon: faWeight },
-    { label: "Registrar Vacinas", color: "bg-primary hover:bg-primary-dark", icon: faSyringe },
-    { label: "Anexos", color: "bg-accent hover:bg-accent-dark", icon: faFile },
-    { label: "Receitas", color: "bg-secondary hover:bg-secondary-dark", icon: faPrescriptionBottle },
-    { label: "Agendar Retorno", color: "bg-primary hover:bg-primary-dark", icon: faRedo },
+    { 
+      label: "Pesos", 
+      view: "weights",
+      color: "bg-secondary hover:bg-secondary-dark", 
+      icon: faWeight,
+    },
+    { 
+      label: "Vacinas", 
+      view: "vaccines",
+      color: "bg-primary hover:bg-primary-dark", 
+      icon: faSyringe 
+    },
+    { 
+      label: "Anexos", 
+      view: "attachments",
+      color: "bg-accent hover:bg-accent-dark", 
+      icon: faFile 
+    },
+    { 
+      label: "Receitas", 
+      view: "prescriptions",
+      color: "bg-secondary hover:bg-secondary-dark", 
+      icon: faPrescriptionBottle 
+    },
+    { 
+      label: "Agendar Retorno", 
+      view: "scheduleReturn",
+      color: "bg-primary hover:bg-primary-dark", 
+      icon: faRedo 
+    },
   ];
 
   return (
@@ -31,7 +54,7 @@ const ActionButtons = ({ clientId, animalId }) => {
           <button
             key={idx}
             className={`${btn.color} text-white p-4 rounded-lg flex items-center justify-center transition-colors shadow-md hover:shadow-lg`}
-            onClick={btn.action}
+            onClick={() => onViewChange(btn.view)}
           >
             <FontAwesomeIcon icon={btn.icon} className="mr-2" />
             <span className='font-semibold'>{btn.label}</span>

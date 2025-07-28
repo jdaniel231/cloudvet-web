@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { getClients } from '../../services/client'; // ou getClients
+import { getClients } from '../../services/client';
 
 export default function Clients() {
   const navigate = useNavigate();
@@ -8,6 +8,8 @@ export default function Clients() {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
   const [errorMsg, setErrorMsg] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
 
   useEffect(() => {
     const load = async () => {
@@ -25,17 +27,16 @@ export default function Clients() {
     load();
   }, []);
 
-  // Normaliza os nomes dos animais independente do formato
   const getAnimalNames = (client) => {
-    if (!client || !client.animals) return [];
-    return client.animals.map(animal => ({
-      id: animal.id || animal.animal_id,
-      name: animal.name
-    }));
-  };
+    if (!client || !Array.isArray(client.animals)) return [];
 
-    const [currentPage, setCurrentPage] = useState(1);
-  const [itemsPerPage, setItemsPerPage] = useState(10); // You can change this value
+    return client.animals
+      .filter(animal => animal && (animal.name || animal.animal_id || animal.id))
+      .map(animal => ({
+        id: animal.id || animal.animal_id || null,
+        name: animal.name || 'Sem nome'
+      }));
+  };
 
   const filteredClients = Array.isArray(clients)
     ? clients.filter((client) => {
@@ -48,30 +49,22 @@ export default function Clients() {
       })
     : [];
 
-  // Pagination logic
   const indexOfLastClient = currentPage * itemsPerPage;
   const indexOfFirstClient = indexOfLastClient - itemsPerPage;
-  const currentClients = filteredClients.slice(
-    indexOfFirstClient,
-    indexOfLastClient
-  );
-
+  const currentClients = filteredClients.slice(indexOfFirstClient, indexOfLastClient);
   const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
-
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
   return (
     <div className="container mx-auto p-4">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold text-text">Lista de Clientes</h1>
-        <div className="flex space-x-4">
-          <button
-            className="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300"
-            onClick={() => navigate('/clients/new')}
-          >
-            Novo Cliente
-          </button>
-        </div>
+        <button
+          className="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300"
+          onClick={() => navigate('/clients/new')}
+        >
+          Novo Cliente
+        </button>
       </div>
 
       <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
@@ -90,7 +83,7 @@ export default function Clients() {
             value={itemsPerPage}
             onChange={(e) => {
               setItemsPerPage(Number(e.target.value));
-              setCurrentPage(1); // Reset to first page when items per page changes
+              setCurrentPage(1);
             }}
             className="p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-text"
             disabled={loading}
@@ -106,9 +99,7 @@ export default function Clients() {
       <div className="bg-card shadow-md rounded-lg p-6 min-h-[120px]">
         {loading && <p className="text-lightText italic">Carregando...</p>}
 
-        {!loading && errorMsg && (
-          <p className="text-red-500">{errorMsg}</p>
-        )}
+        {!loading && errorMsg && <p className="text-red-500">{errorMsg}</p>}
 
         {!loading && !errorMsg && filteredClients.length === 0 && (
           <p className="text-lightText">Nenhum cliente encontrado.</p>
@@ -140,18 +131,26 @@ export default function Clients() {
                           </p>
                         </td>
                         <td className="py-3 px-4 whitespace-nowrap">
-                          {animals.length > 0 && (
+                          {animals.length > 0 ? (
                             <div className="flex flex-wrap gap-2">
-                              {animals.map((animal, index) => (
-                                <Link
-                                  key={animal.id || index}
-                                  to={`/clients/${client.id}/animals/${animal.id}`}
-                                  className="bg-primary-light text-primary-dark text-xs font-medium px-2.5 py-0.5 rounded-full hover:underline"
-                                >
-                                  {animal.name}
-                                </Link>
-                              ))}
+                              {animals.map((animal, index) =>
+                                animal.id ? (
+                                  <Link
+                                    key={animal.id}
+                                    to={`/clients/${client.id}/animals/${animal.id}`}
+                                    className="bg-primary-light text-primary-dark text-xs font-medium px-2.5 py-0.5 rounded-full hover:underline"
+                                  >
+                                    {animal.name}
+                                  </Link>
+                                ) : (
+                                  <span key={index} className="text-xs text-lightText italic">
+                                    Animal sem ID
+                                  </span>
+                                )
+                              )}
                             </div>
+                          ) : (
+                            <span className="text-lightText italic">Sem animais</span>
                           )}
                         </td>
                         <td className="py-3 px-4 whitespace-nowrap text-right text-sm font-medium">
@@ -163,11 +162,7 @@ export default function Clients() {
                           </Link>
                           <button
                             className="bg-primary hover:bg-primary-dark text-white font-bold py-1 px-3 rounded-lg shadow-md transition duration-300"
-                            onClick={() =>
-                              alert(
-                                `Iniciar atendimento para ${client.name}`
-                              )
-                            }
+                            onClick={() => alert(`Iniciar atendimento para ${client.name}`)}
                           >
                             Atender
                           </button>
@@ -179,7 +174,6 @@ export default function Clients() {
               </table>
             </div>
 
-            {/* Pagination Controls */}
             {totalPages > 1 && (
               <div className="flex justify-center mt-4 space-x-2">
                 <button
@@ -195,8 +189,8 @@ export default function Clients() {
                     onClick={() => paginate(number + 1)}
                     className={`px-4 py-2 border border-border rounded-lg ${
                       currentPage === number + 1
-                        ? "bg-primary text-white"
-                        : "text-lightText bg-card hover:bg-background"
+                        ? 'bg-primary text-white'
+                        : 'text-lightText bg-card hover:bg-background'
                     }`}
                   >
                     {number + 1}
