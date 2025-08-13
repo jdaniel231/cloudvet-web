@@ -78,7 +78,7 @@ const NewAnimal = () => {
 
         <div className="bg-card shadow-md rounded-lg p-6">
           {error && <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">{error}</div>}
-          <AnimalForm onSubmit={handleSubmit} onCancel={handleCancel} />
+          <AnimalForm onSubmit={handleSubmit} onCancel={handleCancel} clientId={clientId} />
         </div>
       </div>
 

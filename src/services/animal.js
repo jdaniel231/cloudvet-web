@@ -19,3 +19,23 @@ export const getAnimalById = async (clientId, animalId) => {
     throw error;
   }
 };
+
+export const updateAnimal = async (clientId, animalId, animalData) => {
+  try {
+    const response = await api.put(`/clients/${clientId}/animals/${animalId}`, { animal: animalData });
+    return response.data;
+  } catch (error) {
+    console.error(`Erro ao atualizar animal com ID ${animalId}:`, error.response?.data || error.message);
+    throw error;
+  }
+};
+
+export const deleteAnimal = async (clientId, animalId) => {
+  try {
+    const response = await api.delete(`/clients/${clientId}/animals/${animalId}`);
+    return response.data;
+  } catch (error) {
+    console.error(`Erro ao excluir animal com ID ${animalId}:`, error.response?.data || error.message);
+    throw error;
+  }
+};

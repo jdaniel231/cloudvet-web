@@ -14,6 +14,7 @@ import NewAppointment from './pages/Appointments/New';
 import ShowAppointment from './pages/Appointments/Show';
 import EditAppointment from './pages/Appointments/Edit';
 import NewWeight from './pages/Weights/New';
+import EditAnimal from './pages/Animals/Edit';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/clients/:id" element={<ClientDetails />} />
           <Route path="clients/:id/edit" element={<EditClient />} />
           <Route path="/clients/:clientId/animals/new" element={<NewAnimal />} />
+          <Route path="/clients/:clientId/animals/:animalId/edit" element={<EditAnimal />} />
           <Route path="clients/:clientId/animals/:animalId" element={<AnimalDetails />} />
           <Route path="/clients/:clientId/animals/:animalId/appointments/new" element={<NewAppointment />} />
           <Route path="/clients/:clientId/animals/:animalId/appointments/:appointmentId" element={<ShowAppointment />} />

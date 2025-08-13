@@ -1,23 +1,52 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const AnimalForm = ({ initialData = {}, onSubmit, onCancel }) => {
-  const [name, setName] = useState(initialData.name || '');
-  const [species, setSpecies] = useState(initialData.species || '');
-  const [breed, setBreed] = useState(initialData.breed || '');
-  const [age, setAge] = useState(initialData.age || '');
-  const [sex, setSex] = useState(initialData.sex || '');
-  const [castrated, setCastrated] = useState(initialData.castrated || false);
+export default function AnimalForm({ clientId, initialData = {}, onSubmit, onCancel, isEditMode = false }) {
+  const [form, setForm] = useState({
+    name: initialData.name ?? "",
+    species: initialData.species ?? "",
+    breed: initialData.breed ?? "",
+    age: initialData.age ?? "",
+    sex: initialData.sex ?? "",
+    castrated: Boolean(initialData.castrated) || false,
+  });
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (e) => {
+  const navigate = useNavigate();
+
+  const handleChange = (field) => (e) => {
+    const value = field === "castrated" ? e.target.checked : e.target.value;
+    setForm((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit({
-      name,
-      species,
-      breed,
-      age: parseInt(age),
-      sex,
-      castrated,
-    });
+    setSubmitting(true);
+    try {
+      const payload = {
+        name: form.name.trim(),
+        species: form.species.trim(),
+        breed: form.breed.trim(),
+        age: Number.parseInt(form.age, 10),
+        sex: form.sex,
+        castrated: !!form.castrated,
+      };
+
+      await onSubmit?.(payload);
+
+      // navega SÓ após salvar com sucesso
+      if (isEditMode) {
+        navigate(`/clients/${clientId}/animals/${initialData.id}`);
+      } else {
+        navigate(`/clients/${clientId}`);
+      }
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleCancel = () => {
+    onCancel?.() || navigate(`/clients/${clientId}`);
   };
 
   return (
@@ -30,8 +59,8 @@ const AnimalForm = ({ initialData = {}, onSubmit, onCancel }) => {
           type="text"
           id="name"
           className="shadow appearance-none border border-border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-primary"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={form.name}
+          onChange={handleChange("name")}
           required
         />
       </div>
@@ -40,14 +69,17 @@ const AnimalForm = ({ initialData = {}, onSubmit, onCancel }) => {
         <label htmlFor="species" className="block text-text text-sm font-bold mb-2">
           Espécie:
         </label>
-        <input
-          type="text"
+        <select
           id="species"
           className="shadow appearance-none border border-border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-primary"
-          value={species}
-          onChange={(e) => setSpecies(e.target.value)}
+          value={form.species}
+          onChange={handleChange("species")}
           required
-        />
+        >
+          <option value="">Selecione</option>
+          <option value="cachorro">Canino</option>
+          <option value="gato">Felino</option>
+        </select>
       </div>
 
       <div className="mb-4">
@@ -58,8 +90,8 @@ const AnimalForm = ({ initialData = {}, onSubmit, onCancel }) => {
           type="text"
           id="breed"
           className="shadow appearance-none border border-border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-primary"
-          value={breed}
-          onChange={(e) => setBreed(e.target.value)}
+          value={form.breed}
+          onChange={handleChange("breed")}
         />
       </div>
 
@@ -70,9 +102,12 @@ const AnimalForm = ({ initialData = {}, onSubmit, onCancel }) => {
         <input
           type="number"
           id="age"
+          min={0}
+          step={1}
+          inputMode="numeric"
           className="shadow appearance-none border border-border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-primary"
-          value={age}
-          onChange={(e) => setAge(e.target.value)}
+          value={form.age}
+          onChange={handleChange("age")}
           required
         />
       </div>
@@ -84,8 +119,8 @@ const AnimalForm = ({ initialData = {}, onSubmit, onCancel }) => {
         <select
           id="sex"
           className="shadow appearance-none border border-border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-primary"
-          value={sex}
-          onChange={(e) => setSex(e.target.value)}
+          value={form.sex}
+          onChange={handleChange("sex")}
           required
         >
           <option value="">Selecione</option>
@@ -99,8 +134,8 @@ const AnimalForm = ({ initialData = {}, onSubmit, onCancel }) => {
           type="checkbox"
           id="castrated"
           className="mr-2 h-4 w-4 text-primary focus:ring-primary border-border rounded"
-          checked={castrated}
-          onChange={(e) => setCastrated(e.target.checked)}
+          checked={form.castrated}
+          onChange={handleChange("castrated")}
         />
         <label htmlFor="castrated" className="text-text text-sm font-bold">
           Castrado(a)
@@ -110,20 +145,20 @@ const AnimalForm = ({ initialData = {}, onSubmit, onCancel }) => {
       <div className="flex justify-end space-x-2">
         <button
           type="submit"
-          className="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          className="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-60"
+          disabled={submitting}
         >
-          Salvar Animal
+          {submitting ? (isEditMode ? "Atualizando..." : "Cadastrando...") : (isEditMode ? "Atualizar" : "Cadastrar")}
         </button>
         <button
           type="button"
-          onClick={onCancel}
+          onClick={handleCancel}
           className="bg-lightText hover:bg-text text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          disabled={submitting}
         >
           Cancelar
         </button>
       </div>
     </form>
   );
-};
-
-export default AnimalForm;
+}
