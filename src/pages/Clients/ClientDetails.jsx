@@ -4,7 +4,7 @@ import { getClientById, getClientAnimals } from '../../services/client';
 import ClientAnimalList from '../../components/Animals/ClientAnimalList';
 
 const ClientDetails = () => {
-  const { id } = useParams(); // Assume que o ID do cliente virá da URL
+  const { id } = useParams();
   const [client, setClient] = useState(null);
   const [animals, setAnimals] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,6 +31,10 @@ const ClientDetails = () => {
       fetchData();
     }
   }, [id]);
+
+  const handleAnimalDeleted = (animalId) => {
+    setAnimals(animals.filter((animal) => animal.id !== animalId));
+  };
 
   if (loading) {
     return (
@@ -85,7 +89,7 @@ const ClientDetails = () => {
         </div>
 
         <h2 className="text-2xl font-semibold text-text mb-4">Animais do Cliente</h2>
-        <ClientAnimalList animals={animals} clientId={id} />
+        <ClientAnimalList animals={animals} clientId={id} onAnimalDeleted={handleAnimalDeleted} />
       </div>
     </>
   );

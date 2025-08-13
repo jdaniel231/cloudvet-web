@@ -122,9 +122,8 @@ const EditClient = () => {
         onClose={() => setShowConfirmModal(false)}
         title="Confirmar Exclusão"
         message={`Tem certeza que deseja excluir o cliente ${client?.name}? Esta ação não pode ser desfeita.`}
-        type="warning" // Pode ser um tipo diferente para indicar confirmação
+        type="confirmation" // Pode ser um tipo diferente para indicar confirmação
         onConfirm={confirmDelete} // Adiciona um botão de confirmação
-        showCancelButton={true} // Mostra o botão de cancelar
       />
     </>
   );
