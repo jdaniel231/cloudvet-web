@@ -46,8 +46,8 @@ const WeightHistory = ({ weights, onAdd }) => {
       />
       <div className="flex justify-between items-center mb-4">
         <h3 className="text-xl font-bold text-text flex items-center">
-          <FontAwesomeIcon icon={faWeight} className="text-secondary mr-2" />
-          Histórico de Peso
+          <FontAwesomeIcon icon={faWeight} className="text-primary mr-2" />
+          Peso
         </h3>
         <button 
           className="ml-auto text-sm text-secondary hover:text-primary"

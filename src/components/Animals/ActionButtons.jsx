@@ -1,6 +1,6 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendar, faWeight, faSyringe, faFile, faPrescriptionBottle, faRedo, faPaw } from '@fortawesome/free-solid-svg-icons';
+import { faCalendar, faWeight, faSyringe, faFile, faPrescriptionBottle, faRedo, faPaw, faClinicMedical } from '@fortawesome/free-solid-svg-icons';
 
 const ActionButtons = ({ onViewChange }) => {
 
@@ -9,7 +9,7 @@ const ActionButtons = ({ onViewChange }) => {
       label: "Consultas", 
       view: "consultations",
       color: "bg-primary hover:bg-primary-dark", 
-      icon: faCalendar, 
+      icon: faClinicMedical, 
     },
     { 
       label: "Pesos", 

@@ -15,6 +15,10 @@ import ShowAppointment from './pages/Appointments/Show';
 import EditAppointment from './pages/Appointments/Edit';
 import NewWeight from './pages/Weights/New';
 import EditAnimal from './pages/Animals/Edit';
+import Index from './pages/VaccineType/Index';
+import NewVaccinceType from './pages/VaccineType/New';
+import EditVaccineType from './pages/VaccineType/Edit';
+import NewVaccine from './pages/Vaccines/New';
 
 function App() {
   return (
@@ -25,6 +29,11 @@ function App() {
         {/* Rotas Protegidas */}
         <Route element={<ProtectedLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/vaccine_types" element={<Index />} />
+          <Route path="/vaccine_types/new" element={<NewVaccinceType />} />
+          <Route path="/vaccine_types/:id/edit" element={<EditVaccineType />} />
+          
+          {/* Rotas de Clientes e Animais e Vacinas */}
           <Route path="/clients" element={<ClientsPage />} />
           <Route path="/clients/new" element={<NewClient />} />
           <Route path="/clients/:id" element={<ClientDetails />} />
@@ -36,6 +45,7 @@ function App() {
           <Route path="/clients/:clientId/animals/:animalId/appointments/:appointmentId" element={<ShowAppointment />} />
           <Route path="/clients/:clientId/animals/:animalId/appointments/:appointmentId/edit" element={<EditAppointment />} />
           <Route path="/clients/:clientId/animals/:animalId/weights/new" element={<NewWeight />} />
+          <Route path="/clients/:clientId/animals/:animalId/vaccines/new" element={<NewVaccine />} />
         </Route>
 
         {/* Rota padrão: redireciona para o dashboard se logado, senão para o login */}

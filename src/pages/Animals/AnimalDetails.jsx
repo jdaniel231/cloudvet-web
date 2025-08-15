@@ -7,6 +7,7 @@ import WeightHistory from '../../components/Weights/WeightHistory';
 import { getWeights, createWeight } from '../../services/weight';
 import Modal from '../../components/common/Modal';
 import WeightsForm from '../../components/Weights/Form';
+import VaccineHistory from '../../components/Vaccines/VaccineHistory';
 
 const AnimalDetails = () => {
   const { clientId, animalId } = useParams();
@@ -44,6 +45,8 @@ const AnimalDetails = () => {
         return <ConsultationHistory />;
       case 'weights':
         return <WeightHistory weights={weights} onAdd={() => setIsModalOpen(true)} />;
+      case 'vaccines':
+        return <VaccineHistory />;
       default:
         return <ConsultationHistory />;
     }
