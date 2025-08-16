@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { getAnimalById } from '../services/animal';
-import { getClientById } from '../services/client';
+import { useEffect, useState } from "react";
+import { getAnimalById } from "../services/animal";
+import { getClientById } from "../services/client";
 
 const useAnimalDetails = (clientId, animalId) => {
   const [animal, setAnimal] = useState(null);
@@ -17,7 +17,7 @@ const useAnimalDetails = (clientId, animalId) => {
         const clientData = await getClientById(clientId);
         setClient(clientData);
       } catch (err) {
-        setError('Erro ao carregar detalhes.');
+        setError("Erro ao carregar detalhes.");
         console.error(err);
       } finally {
         setLoading(false);

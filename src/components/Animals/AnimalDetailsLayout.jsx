@@ -1,11 +1,14 @@
-import React from 'react';
-import { useParams } from 'react-router-dom';
-import useAnimalDetails from '../../hooks/useAnimalDetails';
-import AnimalHeader from './AnimalHeader';
+import React from "react";
+import { useParams } from "react-router-dom";
+import useAnimalDetails from "../../hooks/useAnimalDetails";
+import AnimalHeader from "./AnimalHeader";
 
 const AnimalDetailsLayout = ({ children }) => {
   const { clientId, animalId } = useParams();
-  const { animal, client, loading, error } = useAnimalDetails(clientId, animalId);
+  const { animal, client, loading, error } = useAnimalDetails(
+    clientId,
+    animalId,
+  );
 
   if (loading) {
     return (
@@ -24,10 +27,10 @@ const AnimalDetailsLayout = ({ children }) => {
   }
 
   return (
-    <div className='container mx-auto p-4 '>
+    <div className="container mx-auto p-4 ">
       <AnimalHeader client={client} animal={animal} />
-      {React.Children.map(children, child =>
-        React.cloneElement(child, { animal, client, clientId, animalId })
+      {React.Children.map(children, (child) =>
+        React.cloneElement(child, { animal, client, clientId, animalId }),
       )}
     </div>
   );

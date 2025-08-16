@@ -9,9 +9,9 @@ const EditAnimal = () => {
   const [animal, setAnimal] = useState(null);
   const [modalState, setModalState] = useState({
     show: false,
-    title: '',
-    message: '',
-    type: 'success',
+    title: "",
+    message: "",
+    type: "success",
   });
   const navigate = useNavigate();
 
@@ -33,27 +33,29 @@ const EditAnimal = () => {
   const handleSubmit = async (animalData) => {
     try {
       await updateAnimal(clientId, animalId, animalData);
-      console.log('Animal atualizado com sucesso!');
+      console.log("Animal atualizado com sucesso!");
       setModalState({
         show: true,
-        title: 'Atualização Realizada!',
+        title: "Atualização Realizada!",
         message: `Animal ${animalData.name} atualizado com sucesso!`,
-        type: 'success',
+        type: "success",
       });
     } catch (error) {
-      console.error('Erro ao atualizar animal:', error);
+      console.error("Erro ao atualizar animal:", error);
       setModalState({
         show: true,
-        title: 'Erro no Atualizar!',
-        message: error.response?.data?.error || 'Ocorreu um erro ao atualizar o animal. Tente novamente.',
-        type: 'error',
+        title: "Erro no Atualizar!",
+        message:
+          error.response?.data?.error ||
+          "Ocorreu um erro ao atualizar o animal. Tente novamente.",
+        type: "error",
       });
     }
   };
 
   const handleCloseModal = () => {
     setModalState({ ...modalState, show: false });
-    if (modalState.type === 'success') {
+    if (modalState.type === "success") {
       navigate(`/clients/${clientId}/animals/${animalId}`);
     }
   };
@@ -63,29 +65,30 @@ const EditAnimal = () => {
   };
 
   return (
-   <>
+    <>
       <div className="container mx-auto p-4">
         <h1 className="text-3xl font-bold text-text mb-6">Editar Animal</h1>
         <div className="bg-card shadow-md rounded-lg p-6">
-        {animal && (
-          <AnimalForm
-            clientId={clientId}
-            initialData={animal}
-            onSubmit={handleSubmit}
-            onCancel={handleCancel}
-            isEditMode
-          />
-        )}       </div>
-     </div>
+          {animal && (
+            <AnimalForm
+              clientId={clientId}
+              initialData={animal}
+              onSubmit={handleSubmit}
+              onCancel={handleCancel}
+              isEditMode
+            />
+          )}{" "}
+        </div>
+      </div>
 
-     <Modal
-       show={modalState.show}
-       onClose={handleCloseModal}
-       title={modalState.title}
-       message={modalState.message}
-       type={modalState.type}
-     />
-   </>
+      <Modal
+        show={modalState.show}
+        onClose={handleCloseModal}
+        title={modalState.title}
+        message={modalState.message}
+        type={modalState.type}
+      />
+    </>
   );
 };
 

@@ -1,5 +1,5 @@
-import React from 'react';
-import { TrendingUp } from 'lucide-react';
+import React from "react";
+import { TrendingUp } from "lucide-react";
 
 const StatCard = ({ title, value, icon: Icon, color, trend }) => (
   <div className="bg-white p-6 rounded-xl shadow-sm border hover:shadow-md transition-shadow">

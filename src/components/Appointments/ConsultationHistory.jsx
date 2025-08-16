@@ -1,70 +1,101 @@
-import React, { useState, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendar, faEdit, faEye, faPlus, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { getAppointments, deleteAppointment, getAppointmentById } from '../../services/appoint';
-import Modal from '../common/Modal';
-import AppointmentDetails from './AppointmentDetails';
+import React, { useState, useEffect, useCallback } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faCalendar,
+  faEdit,
+  faEye,
+  faPlus,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import {
+  getAppointments,
+  deleteAppointment,
+  getAppointmentById,
+} from "../../services/appoint";
+import Modal from "../common/Modal";
+import AppointmentDetails from "./AppointmentDetails";
 
 const ConsultationHistory = () => {
   const { clientId, animalId } = useParams();
   const [consultations, setConsultations] = useState([]);
   // const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [modalState, setModalState] = useState({ show: false, title: '', message: '', onConfirm: null });
-  const [viewModalState, setViewModalState] = useState({ show: false, appointment: null });
+  
+  const [modalState, setModalState] = useState({
+    show: false,
+    title: "",
+    message: "",
+    onConfirm: null,
+  });
+  const [viewModalState, setViewModalState] = useState({
+    show: false,
+    appointment: null,
+  });
 
   const navigate = useNavigate();
 
-  const fetchConsultations = async () => {
+  const fetchConsultations = useCallback(async () => {
     try {
       // setLoading(true);
       const consultationsData = await getAppointments(clientId, animalId);
       setConsultations(consultationsData);
     } catch (err) {
-      setError('Erro ao carregar o histórico de consultas.');
       console.error(err);
     } finally {
       // setLoading(false);
     }
-  };
+  }, [clientId, animalId]);
 
   useEffect(() => {
     if (clientId && animalId) {
       fetchConsultations();
     }
-  }, [clientId, animalId]);
+  }, [clientId, animalId, fetchConsultations]);
 
   const handleView = async (appointmentId) => {
     try {
-      const appointmentData = await getAppointmentById(clientId, animalId, appointmentId);
+      const appointmentData = await getAppointmentById(
+        clientId,
+        animalId,
+        appointmentId,
+      );
       setViewModalState({ show: true, appointment: appointmentData });
     } catch (error) {
-      console.error('Erro ao buscar detalhes da consulta:', error);
-      setModalState({ show: true, title: 'Erro!', message: 'Ocorreu um erro ao buscar os detalhes da consulta.', onConfirm: null });
+      console.error("Erro ao buscar detalhes da consulta:", error);
+      setModalState({
+        show: true,
+        title: "Erro!",
+        message: "Ocorreu um erro ao buscar os detalhes da consulta.",
+        onConfirm: null,
+      });
     }
   };
 
   const handleDelete = async (appointmentId) => {
     setModalState({
       show: true,
-      title: 'Confirmar Exclusão',
-      message: 'Tem certeza que deseja excluir esta consulta?',
+      title: "Confirmar Exclusão",
+      message: "Tem certeza que deseja excluir esta consulta?",
       onConfirm: async () => {
         try {
           await deleteAppointment(clientId, animalId, appointmentId);
           fetchConsultations(); // Re-fetch consultations after deletion
-          setModalState({ show: false, title: '', message: '', onConfirm: null });
+          setModalState({
+            show: false,
+            title: "",
+            message: "",
+            onConfirm: null,
+          });
         } catch (error) {
-          console.error('Erro ao excluir consulta:', error);
-          setModalState({ show: true, title: 'Erro!', message: 'Ocorreu um erro ao excluir a consulta.', onConfirm: null });
+          console.error("Erro ao excluir consulta:", error);
+          
         }
       },
     });
   };
 
   const handleCloseModal = () => {
-    setModalState({ show: false, title: '', message: '', onConfirm: null });
+    setModalState({ show: false, title: "", message: "", onConfirm: null });
   };
 
   const handleCloseViewModal = () => {
@@ -104,8 +135,12 @@ const ConsultationHistory = () => {
           Histórico de Consultas
         </h3>
         <button
-          className=" text-secondary px-4 py-2 rounded-md text-sm hover:text-primary transition-colors" 
-          onClick={() => navigate(`/clients/${clientId}/animals/${animalId}/appointments/new`)}
+          className=" text-secondary px-4 py-2 rounded-md text-sm hover:text-primary transition-colors"
+          onClick={() =>
+            navigate(
+              `/clients/${clientId}/animals/${animalId}/appointments/new`,
+            )
+          }
         >
           <FontAwesomeIcon icon={faPlus} className="mr-2" />
         </button>
@@ -120,7 +155,9 @@ const ConsultationHistory = () => {
           >
             <div className="flex justify-between items-start">
               <div>
-                <p className="font-semibold text-text">{new Date(item.created_at).toLocaleDateString('pt-BR')}</p>
+                <p className="font-semibold text-text">
+                  {new Date(item.created_at).toLocaleDateString("pt-BR")}
+                </p>
                 <p className="text-sm text-lightText">{item.user.email}</p>
               </div>
               <div className="flex items-center gap-2">
@@ -155,7 +192,7 @@ const ConsultationHistory = () => {
         onConfirm={modalState.onConfirm}
         title={modalState.title}
         message={modalState.message}
-        type={modalState.onConfirm ? 'confirmation' : 'error'}
+        type={modalState.onConfirm ? "confirmation" : "error"}
       />
       <Modal show={viewModalState.show} onClose={handleCloseViewModal}>
         <AppointmentDetails
@@ -167,7 +204,6 @@ const ConsultationHistory = () => {
       </Modal>
     </div>
   );
-
 };
 
 export default ConsultationHistory;
