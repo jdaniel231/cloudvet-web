@@ -1,16 +1,44 @@
-import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
-import { getClientById } from '../../services/client';
-import { getAnimalById } from '../../services/animal';
-import { Link, useNavigate } from 'react-router-dom';
-import authService from '../../services/authService';
-import { PlusCircle, HospitalIcon, UserRound, Dog, DollarSign, Eye, LayoutDashboard, Calendar, Users, Settings, Menu, LogOut, Cloud } from 'lucide-react';
-import Breadcrumbs from '../common/Breadcrumbs';
+import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { getClientById } from "../../services/client";
+import { getAnimalById } from "../../services/animal";
+import { Link, useNavigate } from "react-router-dom";
+import authService from "../../services/authService";
+import {
+  PlusCircle,
+  HospitalIcon,
+  UserRound,
+  Dog,
+  DollarSign,
+  Eye,
+  LayoutDashboard,
+  Calendar,
+  Users,
+  Settings,
+  Menu,
+  LogOut,
+  Cloud,
+} from "lucide-react";
+import Breadcrumbs from "../common/Breadcrumbs";
 
-const Sidebar = ({ sidebarOpen, activeTab, setActiveTab, menuItems, handleLogout, toggleSidebar }) => (
-  <div className={`flex flex-col h-screen transition-all duration-300 ${sidebarOpen ? 'w-64' : 'w-20'} bg-primary text-white p-4`}>
+const Sidebar = ({
+  sidebarOpen,
+  activeTab,
+  setActiveTab,
+  menuItems,
+  handleLogout,
+  toggleSidebar,
+}) => (
+  <div
+    className={`flex flex-col h-screen transition-all duration-300 ${sidebarOpen ? "w-64" : "w-20"} bg-primary text-white p-4`}
+  >
     <div className="flex items-center justify-between mb-6">
-      {sidebarOpen && <h2 className="text-2xl font-bold flex items-center"><Cloud className="h-8 w-8 mr-2" />CloudVet</h2>}
+      {sidebarOpen && (
+        <h2 className="text-2xl font-bold flex items-center">
+          <Cloud className="h-8 w-8 mr-2" />
+          CloudVet
+        </h2>
+      )}
       <button onClick={toggleSidebar} className="text-white focus:outline-none">
         <Menu className="h-6 w-6" />
       </button>
@@ -18,14 +46,23 @@ const Sidebar = ({ sidebarOpen, activeTab, setActiveTab, menuItems, handleLogout
     <nav className="flex-1">
       <ul>
         {menuItems.map((item) => (
-          <li key={item.id} className={`mb-2 ${activeTab === item.id ? 'font-bold' : ''}`}>
+          <li
+            key={item.id}
+            className={`mb-2 ${activeTab === item.id ? "font-bold" : ""}`}
+          >
             {item.path ? (
-              <Link to={item.path} className="flex items-center p-2 rounded hover:bg-primary-dark">
+              <Link
+                to={item.path}
+                className="flex items-center p-2 rounded hover:bg-primary-dark"
+              >
                 {item.icon}
                 {sidebarOpen && <span className="ml-3">{item.name}</span>}
               </Link>
             ) : (
-              <button onClick={() => setActiveTab(item.id)} className="flex items-center w-full text-left p-2 rounded hover:bg-primary-dark">
+              <button
+                onClick={() => setActiveTab(item.id)}
+                className="flex items-center w-full text-left p-2 rounded hover:bg-primary-dark"
+              >
                 {item.icon}
                 {sidebarOpen && <span className="ml-3">{item.name}</span>}
               </button>
@@ -35,8 +72,8 @@ const Sidebar = ({ sidebarOpen, activeTab, setActiveTab, menuItems, handleLogout
       </ul>
     </nav>
     <div className="mt-auto pt-4 border-t border-border">
-      <button 
-        onClick={handleLogout} 
+      <button
+        onClick={handleLogout}
         className="flex items-center w-full text-left p-2 rounded hover:bg-red-700 bg-red-600 text-white font-bold"
       >
         <LogOut className="h-5 w-5" />
@@ -61,8 +98,8 @@ const Header = ({ searchTerm, setSearchTerm, nameMap }) => (
 
 export default function MainLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(true); // Sidebar starts open
-  const [activeTab, setActiveTab] = useState('dashboard');
-  const [searchTerm, setSearchTerm] = useState('');
+  const [activeTab, setActiveTab] = useState("dashboard");
+  const [searchTerm, setSearchTerm] = useState("");
   const [nameMap, setNameMap] = useState({});
   const navigate = useNavigate();
   const { clientId, animalId } = useParams();
@@ -97,15 +134,35 @@ export default function MainLayout({ children }) {
   };
 
   const menuItems = [
-    { id: 'dashboard', name: 'Dashboard', path: '/dashboard', icon: <LayoutDashboard className="h-5 w-5" /> },
-    { id: 'appointments', name: 'Agendamentos', path: '/appointments', icon: <Calendar className="h-5 w-5" /> },
-    { id: 'patients', name: 'Pacientes', path: '/clients', icon: <Users className="h-5 w-5" /> },
-    { id: 'settings', name: 'Configurações', path: '/settings', icon: <Settings className="h-5 w-5" /> },
+    {
+      id: "dashboard",
+      name: "Dashboard",
+      path: "/dashboard",
+      icon: <LayoutDashboard className="h-5 w-5" />,
+    },
+    {
+      id: "appointments",
+      name: "Agendamentos",
+      path: "/appointments",
+      icon: <Calendar className="h-5 w-5" />,
+    },
+    {
+      id: "patients",
+      name: "Pacientes",
+      path: "/clients",
+      icon: <Users className="h-5 w-5" />,
+    },
+    {
+      id: "settings",
+      name: "Configurações",
+      path: "/settings",
+      icon: <Settings className="h-5 w-5" />,
+    },
   ];
 
   const handleLogout = () => {
     authService.logout();
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
@@ -124,9 +181,7 @@ export default function MainLayout({ children }) {
           setSearchTerm={setSearchTerm}
           nameMap={nameMap}
         />
-        <main className="p-6 overflow-y-auto h-full">
-          {children}
-        </main>
+        <main className="p-6 overflow-y-auto h-full">{children}</main>
       </div>
     </div>
   );

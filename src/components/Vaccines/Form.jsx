@@ -1,41 +1,30 @@
 import { useState, useEffect } from "react";
 import { getVaccineTypes } from "../../services/vaccineType";
 import { getUsers } from "../../services/user";
+import Input from "../common/FormFields/Input";
+import Select from "../common/FormFields/Select";
+import Checkbox from "../common/FormFields/Checkbox";
+import { formatDateToBR, formatDateToISO } from "../../utils/dateUtils";
 
-const formatDateToBR = (dateString) => {
-  if (!dateString) return "";
-  const date = new Date(dateString);
-  const userTimezoneOffset = date.getTimezoneOffset() * 60000;
-  const adjustedDate = new Date(date.getTime() + userTimezoneOffset);
-  const day = String(adjustedDate.getDate()).padStart(2, '0');
-  const month = String(adjustedDate.getMonth() + 1).padStart(2, '0');
-  const year = adjustedDate.getFullYear();
-  return `${day}/${month}/${year}`;
-};
+export const VaccineForm = ({
+  initialData = {},
+  onSubmit,
+  onCancel,
+  isEditMode = false,
+}) => {
+  const [form, setForm] = useState({
+    vaccineTypeId: initialData.vaccineTypeId || [],
+    applicationDate:
+      initialData.applicationDate || new Date().toISOString().slice(0, 10),
+    returnDate: initialData.returnDate || "",
+    appliedDose: initialData.appliedDose || "",
+    obs: initialData.obs || "",
+    userId: initialData.userId || "",
+    returnInterval: "",
+  });
 
-const formatDateToISO = (dateString) => {
-  if (!/^\d{2}\/\d{2}\/\d{4}$/.test(dateString)) return null;
-  const [day, month, year] = dateString.split('/');
-  return `${year}-${month}-${day}`;
-};
-
-export const VaccineForm = ({ initialData = {}, onSubmit, onCancel, isEditMode = false }) => {
-  const [vaccineTypeId, setVaccineTypeId] = useState(initialData.vaccineTypeId || []);
-  const [applicationDate, setApplicationDate] = useState(initialData.applicationDate || new Date().toISOString().slice(0, 10));
-  const [returnDate, setReturnDate] = useState(initialData.returnDate || "");
-  const [appliedDose, setAppliedDose] = useState(initialData.appliedDose || "");
-  const [obs, setObs] = useState(initialData.obs || "");
   const [vaccineTypes, setVaccineTypes] = useState([]);
   const [users, setUsers] = useState([]);
-  const [userId, setUserId] = useState(initialData.userId || "");
-  const [returnInterval, setReturnInterval] = useState("");
-
-  const [displayApplicationDate, setDisplayApplicationDate] = useState(formatDateToBR(applicationDate));
-  const [displayReturnDate, setDisplayReturnDate] = useState(formatDateToBR(returnDate));
-
-  useEffect(() => {
-    setDisplayReturnDate(formatDateToBR(returnDate));
-  }, [returnDate]);
 
   useEffect(() => {
     const fetchInitialData = async () => {
@@ -52,51 +41,65 @@ export const VaccineForm = ({ initialData = {}, onSubmit, onCancel, isEditMode =
     fetchInitialData();
   }, []);
 
+  const handleChange = (field) => (e) => {
+    const value = e.target.value;
+    setForm((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
+
   const handleApplicationDateChange = (e) => {
     const value = e.target.value;
-    setDisplayApplicationDate(value);
     const isoDate = formatDateToISO(value);
     if (isoDate) {
-      setApplicationDate(isoDate);
+      setForm((prev) => ({ ...prev, applicationDate: isoDate }));
     }
   };
 
   const handleDateCalculation = (interval) => {
-    setReturnInterval(interval);
-    if (applicationDate && interval) {
-      const date = new Date(`${applicationDate}T00:00:00`);
-      const [value, unit] = interval.split(' ');
+    setForm((prev) => ({ ...prev, returnInterval: interval }));
+    if (form.applicationDate && interval) {
+      const date = new Date(form.applicationDate);
 
-      if (unit === 'dias') {
-        date.setDate(date.getDate() + parseInt(value));
-      } else if (unit === 'meses') {
-        date.setMonth(date.getMonth() + parseInt(value));
-      } else if (unit === 'anual') {
+      if (interval === "anual") {
         date.setFullYear(date.getFullYear() + 1);
+      } else {
+        const [value, unit] = interval.split(" ");
+        if (unit === "dias") {
+          date.setDate(date.getDate() + parseInt(value));
+        } else if (unit === "meses") {
+          date.setMonth(date.getMonth() + parseInt(value));
+        }
       }
-      setReturnDate(date.toISOString().split('T')[0]);
+
+      setForm((prev) => ({
+        ...prev,
+        returnDate: date.toISOString().split("T")[0],
+      }));
     }
   };
 
   const handleCheckboxChange = (e) => {
     const { value, checked } = e.target;
     const intValue = parseInt(value, 10);
-    if (checked) {
-      setVaccineTypeId([...vaccineTypeId, intValue]);
-    } else {
-      setVaccineTypeId(vaccineTypeId.filter((id) => id !== intValue));
-    }
+    setForm((prev) => ({
+      ...prev,
+      vaccineTypeId: checked
+        ? [...prev.vaccineTypeId, intValue]
+        : prev.vaccineTypeId.filter((id) => id !== intValue),
+    }));
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({ 
-      vaccine_type_id: vaccineTypeId,
-      application_date: applicationDate,
-      return_date: returnDate,
-      applied_dose: appliedDose,
-      user_id: userId,
-      obs 
+    onSubmit({
+      vaccine_type_id: form.vaccineTypeId,
+      application_date: form.applicationDate,
+      return_date: form.returnDate,
+      applied_dose: form.appliedDose,
+      user_id: form.userId,
+      obs: form.obs,
     });
   };
 
@@ -123,112 +126,97 @@ export const VaccineForm = ({ initialData = {}, onSubmit, onCancel, isEditMode =
   return (
     <form onSubmit={handleSubmit}>
       <div className="mb-4">
-        <label className="block text-text text-sm font-bold mb-2">Tipo de vacina</label>
+        <label className="block text-text text-sm font-bold mb-2">
+          Tipo de vacina
+        </label>
         {vaccineTypes.map((type) => (
-          <div key={type.id}>
-            <input
-              type="checkbox"
-              id={`vaccine-${type.id}`}
-              value={type.id}
-              onChange={handleCheckboxChange}
-              checked={vaccineTypeId.includes(type.id)}
-            />
-            <label htmlFor={`vaccine-${type.id}`} className="ml-2">{type.name}</label>
-          </div>
+          <Checkbox
+            key={type.id}
+            id={`vaccine-${type.id}`}
+            value={type.id}
+            onChange={handleCheckboxChange}
+            checked={form.vaccineTypeId.includes(type.id)}
+            label={type.name}
+          />
         ))}
       </div>
 
-      <div className="mb-4">
-        <label htmlFor="applicationDate" className="block text-text text-sm font-bold mb-2">Data de Aplicação</label>
-        <input
-          type="text"
-          id="applicationDate"
-          placeholder="DD/MM/AAAA"
-          value={displayApplicationDate}
-          onChange={handleApplicationDateChange}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline"
-        />
-      </div>
+      <Input
+        label="Data de Aplicação"
+        id="applicationDate"
+        placeholder="DD/MM/AAAA"
+        value={formatDateToBR(form.applicationDate)}
+        onChange={handleApplicationDateChange}
+      />
 
-      <div className="mb-4">
-        <label htmlFor="appliedDose" className="block text-text text-sm font-bold mb-2">Dose Aplicada</label>
-        <select
-          id="appliedDose"
-          value={appliedDose}
-          onChange={(e) => setAppliedDose(e.target.value)}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline"
-        >
-          <option value="">Selecione a dose</option>
-          {doseOptions.map(option => (
-            <option key={option} value={option}>{option}</option>
-          ))}
-        </select>
-      </div>
+      <Select
+        label="Dose Aplicada"
+        id="appliedDose"
+        value={form.appliedDose}
+        onChange={handleChange("appliedDose")}
+      >
+        <option value="">Selecione a dose</option>
+        {doseOptions.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </Select>
 
-      <div className="mb-4">
-        <label htmlFor="user" className="block text-text text-sm font-bold mb-2">Veterinário</label>
-        <select
-          id="user"
-          value={userId}
-          onChange={(e) => setUserId(e.target.value)}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline"
-        >
-          <option value="">Selecione o veterinário</option>
-          {users.map(user => (
-            <option key={user.id} value={user.id}>{user.name}</option>
-          ))}
-        </select>
-      </div>
+      <Select
+        label="Veterinário"
+        id="user"
+        value={form.userId}
+        onChange={handleChange("userId")}
+      >
+        <option value="">Selecione o veterinário</option>
+        {users.map((user) => (
+          <option key={user.id} value={user.id}>
+            {user.name}
+          </option>
+        ))}
+      </Select>
 
-      <div className="mb-4">
-        <label htmlFor="returnInterval" className="block text-text text-sm font-bold mb-2">Retorno</label>
-        <select
-          id="returnInterval"
-          value={returnInterval}
-          onChange={(e) => handleDateCalculation(e.target.value)}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline"
-        >
-          <option value="">Selecione o intervalo de retorno</option>
-          {returnOptions.map(option => (
-            <option key={option} value={option}>{option}</option>
-          ))}
-        </select>
-      </div>
+      <Select
+        label="Retorno"
+        id="returnInterval"
+        value={form.returnInterval}
+        onChange={(e) => handleDateCalculation(e.target.value)}
+      >
+        <option value="">Selecione o intervalo de retorno</option>
+        {returnOptions.map((option) => (
+          <option key={option} value={option}>
+            {option}
+          </option>
+        ))}
+      </Select>
 
-      <div className="mb-4">
-        <label htmlFor="returnDate" className="block text-text text-sm font-bold mb-2">Data de Retorno</label>
-        <input
-          type="text"
-          id="returnDate"
-          placeholder="DD/MM/AAAA"
-          value={displayReturnDate}
-          className="shadow appearance-none border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline"
-          readOnly
-        />
-      </div>
-      
-      <div className="mb-4">
-          <label htmlFor="obs" className="block text-text text-sm font-bold mb-2">Observação</label>
-          <input
-            type="text"
-            id="obs"
-            value={obs}
-            onChange={(e) => setObs(e.target.value)}
-            className="shadow appearance-none border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline"
-          />
-        </div>
+      <Input
+        label="Data de Retorno"
+        id="returnDate"
+        placeholder="DD/MM/AAAA"
+        value={formatDateToBR(form.returnDate)}
+        readOnly
+      />
 
-      <div className="flex items-center justify-between">
+      <Input
+        label="Observação"
+        id="obs"
+        value={form.obs}
+        onChange={handleChange("obs")}
+      />
+
+      <div className="flex justify-end mt-6">
         <button
           type="submit"
           className="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
         >
-          {isEditMode ? 'Atualizar' : 'Salvar'}
+          {isEditMode ? "Atualizar" : "Salvar"}
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          className="ml-2 bg-lightText hover:bg-text text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
         >
           Cancelar
         </button>

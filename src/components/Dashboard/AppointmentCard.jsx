@@ -1,5 +1,5 @@
-import React from 'react';
-import { Eye } from 'lucide-react';
+import React from "react";
+import { Eye } from "lucide-react";
 
 const AppointmentCard = ({ appointment, getStatusColor }) => (
   <div className="grid grid-cols-5 gap-4 items-center p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
@@ -13,7 +13,9 @@ const AppointmentCard = ({ appointment, getStatusColor }) => (
       <p className="text-sm text-gray-600">R$ {appointment.value}</p>
     </div>
     <div className="col-span-1">
-      <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(appointment.status)}`}>
+      <span
+        className={`px-2 py-1 text-xs rounded-full ${getStatusColor(appointment.status)}`}
+      >
         {appointment.status}
       </span>
     </div>

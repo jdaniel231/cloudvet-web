@@ -1,15 +1,11 @@
-import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-  faDog,
-  faCat,
-  faPaw,
-} from '@fortawesome/free-solid-svg-icons';
-import { Eye, Pen, Trash } from 'lucide-react';
-import { deleteAnimal } from '../../services/animal';
-import Modal from '../common/Modal';
+import React, { useState } from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faDog, faCat, faPaw } from "@fortawesome/free-solid-svg-icons";
+import { Eye, Pen, Trash } from "lucide-react";
+import { deleteAnimal } from "../../services/animal";
+import Modal from "../common/Modal";
 
 const speciesIcons = {
   cachorro: faDog,
@@ -19,22 +15,40 @@ const speciesIcons = {
 };
 
 const ClientAnimalList = ({ animals, clientId, onAnimalDeleted }) => {
-  const [modalState, setModalState] = useState({ show: false, title: '', message: '', onConfirm: null, type: 'confirmation' });
+  const [modalState, setModalState] = useState({
+    show: false,
+    title: "",
+    message: "",
+    onConfirm: null,
+    type: "confirmation",
+  });
 
   const handleDelete = (animalId) => {
     setModalState({
       show: true,
-      title: 'Confirmar Exclusão',
-      message: 'Tem certeza que deseja excluir este animal?',
-      type: 'confirmation',
+      title: "Confirmar Exclusão",
+      message: "Tem certeza que deseja excluir este animal?",
+      type: "confirmation",
       onConfirm: async () => {
         try {
           await deleteAnimal(clientId, animalId);
           onAnimalDeleted(animalId);
-          setModalState({ show: false, title: '', message: '', onConfirm: null, type: 'success' });
+          setModalState({
+            show: false,
+            title: "",
+            message: "",
+            onConfirm: null,
+            type: "success",
+          });
         } catch (error) {
-          console.error('Erro ao excluir animal:', error);
-          setModalState({ show: true, title: 'Erro!', message: 'Ocorreu um erro ao excluir o animal.', onConfirm: null, type: 'error' });
+          console.error("Erro ao excluir animal:", error);
+          setModalState({
+            show: true,
+            title: "Erro!",
+            message: "Ocorreu um erro ao excluir o animal.",
+            onConfirm: null,
+            type: "error",
+          });
         }
       },
     });
@@ -47,7 +61,9 @@ const ClientAnimalList = ({ animals, clientId, onAnimalDeleted }) => {
   if (!animals || animals.length === 0) {
     return (
       <div className="text-center py-4">
-        <p className="text-lightText mb-4">Nenhum animal encontrado para este cliente.</p>
+        <p className="text-lightText mb-4">
+          Nenhum animal encontrado para este cliente.
+        </p>
         <Link
           to={`/clients/${clientId}/animals/new`}
           className="inline-block bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
@@ -76,11 +92,18 @@ const ClientAnimalList = ({ animals, clientId, onAnimalDeleted }) => {
           >
             <div className="p-4 flex flex-col items-center">
               <div className="w-20 h-20 rounded-full bg-background flex items-center justify-center mb-3 border-2 border-border text-4xl text-primary">
-                <FontAwesomeIcon icon={speciesIcons[animal.species?.toLowerCase()] || speciesIcons.default} />
+                <FontAwesomeIcon
+                  icon={
+                    speciesIcons[animal.species?.toLowerCase()] ||
+                    speciesIcons.default
+                  }
+                />
               </div>
-              <h3 className="text-xl font-semibold text-text mb-1">{animal.name}</h3>
+              <h3 className="text-xl font-semibold text-text mb-1">
+                {animal.name}
+              </h3>
               <p className="text-sm text-lightText mb-2">
-                {animal.species} {animal.breed ? `- ${animal.breed}` : ''}
+                {animal.species} {animal.breed ? `- ${animal.breed}` : ""}
               </p>
               <div className="flex space-x-2 mt-4">
                 <Link
@@ -125,7 +148,7 @@ ClientAnimalList.propTypes = {
       name: PropTypes.string.isRequired,
       species: PropTypes.string.isRequired,
       breed: PropTypes.string,
-    })
+    }),
   ).isRequired,
   clientId: PropTypes.string.isRequired,
   onAnimalDeleted: PropTypes.func.isRequired,

@@ -6,14 +6,13 @@ import { VaccineForm } from "../../components/Vaccines/Form";
 import { useState } from "react";
 
 const NewVaccine = () => {
-
-  const {clientId, animalId} = useParams();
+  const { clientId, animalId } = useParams();
   const [modalState, setModalState] = useState({
     show: false,
-    title: '',
-    message: '',
-    type: 'success', // 'success' ou 'error'
-  })
+    title: "",
+    message: "",
+    type: "success", // 'success' ou 'error'
+  });
 
   const navigate = useNavigate();
 
@@ -22,9 +21,9 @@ const NewVaccine = () => {
       if (!formData.vaccine_type_id || formData.vaccine_type_id.length === 0) {
         setModalState({
           show: true,
-          title: 'Nenhuma vacina selecionada',
-          message: 'Por favor, selecione pelo menos um tipo de vacina.',
-          type: 'error',
+          title: "Nenhuma vacina selecionada",
+          message: "Por favor, selecione pelo menos um tipo de vacina.",
+          type: "error",
         });
         return;
       }
@@ -32,23 +31,23 @@ const NewVaccine = () => {
       await createVaccine(clientId, animalId, formData);
       setModalState({
         show: true,
-        title: 'Vacina Cadastrada',
-        message: 'As vacinas foram cadastradas com sucesso',
-        type: 'success',
+        title: "Vacina Cadastrada",
+        message: "As vacinas foram cadastradas com sucesso",
+        type: "success",
       });
     } catch (error) {
       setModalState({
         show: true,
-        title: 'Erro ao cadastrar a vacina',
+        title: "Erro ao cadastrar a vacina",
         message: error.message,
-        type: 'error',
+        type: "error",
       });
     }
   };
 
   const handleCloseModal = () => {
     setModalState({ ...modalState, show: false });
-    if (modalState.type === 'success') {
+    if (modalState.type === "success") {
       navigate(`/clients/${clientId}/animals/${animalId}`);
     }
   };
@@ -57,15 +56,10 @@ const NewVaccine = () => {
     navigate(`/clients/${clientId}/animals/${animalId}`);
   };
 
-
   return (
     <AnimalDetailsLayout>
       <div className="bg-card shadow-md rounded-lg p-6">
-      
-        <VaccineForm
-          onSubmit={handleSubmit}
-          onCancel={handleCancel}
-        />
+        <VaccineForm onSubmit={handleSubmit} onCancel={handleCancel} />
         <Modal
           show={modalState.show}
           title={modalState.title}
@@ -76,6 +70,6 @@ const NewVaccine = () => {
       </div>
     </AnimalDetailsLayout>
   );
-}
+};
 
 export default NewVaccine;

@@ -1,29 +1,32 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import Input from "../common/FormFields/Input";
 
-export default function VaccineTypeForm({ initialData = {}, onSubmit, onCancel }) {
-  const [name, setName] = useState(initialData.name || '');
+export default function VaccineTypeForm({
+  initialData = {},
+  onSubmit,
+  onCancel,
+}) {
+  const [form, setForm] = useState({
+    name: initialData.name || "",
+  });
+
+  const handleChange = (field) => (e) => {
+    setForm((prev) => ({ ...prev, [field]: e.target.value }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({
-      name,
-    });
+    onSubmit(form);
   };
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="mb-4">
-        <label htmlFor="name" className="block text-text text-sm font-bold mb-2">
-          Nome
-        </label>
-        <input
-          type="text"
-          id="name"
-          className="shadow appearance-none border border-border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-primary"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-        />
-      </div>
+      <Input
+        label="Nome"
+        id="name"
+        value={form.name}
+        onChange={handleChange("name")}
+      />
 
       <div className="flex justify-end">
         <button

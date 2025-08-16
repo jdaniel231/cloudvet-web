@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Input from "../common/FormFields/Input";
 
 const TabButton = ({ active, onClick, children }) => (
   <button
@@ -20,24 +21,20 @@ export default function AppointmentForm({
   isEditMode = false,
   onCancel,
 }) {
-  const [chief_complaint, setChiefComplaint] = useState(
-    initialData.chief_complaint || ""
-  );
-  const [medical_history, setMedicalHistory] = useState(
-    initialData.medical_history || ""
-  );
-  const [suspected_exams, setSuspectedDiagnosis] = useState(
-    initialData.suspected_exams || ""
-  );
+  const [form, setForm] = useState({
+    chief_complaint: initialData.chief_complaint || "",
+    medical_history: initialData.medical_history || "",
+    suspected_exams: initialData.suspected_exams || "",
+  });
   const [activeTab, setActiveTab] = useState("complaint");
+
+  const handleChange = (field) => (e) => {
+    setForm((prev) => ({ ...prev, [field]: e.target.value }));
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    onSubmit({
-      chief_complaint,
-      medical_history,
-      suspected_exams,
-    });
+    onSubmit(form);
   };
 
   return (
@@ -67,55 +64,28 @@ export default function AppointmentForm({
 
       <div className="mt-4">
         {activeTab === "complaint" && (
-          <div className="mb-4">
-            <label
-              htmlFor="chief_complaint"
-              className="block text-text text-sm font-bold mb-2"
-            >
-              Chief Complaint:
-            </label>
-            <input
-              type="text"
-              id="chief_complaint"
-              className="shadow appearance-none border border-border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-primary"
-              value={chief_complaint}
-              onChange={(e) => setChiefComplaint(e.target.value)}
-            />
-          </div>
+          <Input
+            label="Chief Complaint"
+            id="chief_complaint"
+            value={form.chief_complaint}
+            onChange={handleChange("chief_complaint")}
+          />
         )}
         {activeTab === "history" && (
-          <div className="mb-4">
-            <label
-              htmlFor="medical_history"
-              className="block text-text text-sm font-bold mb-2"
-            >
-              Medical History:
-            </label>
-            <input
-              type="text"
-              id="medical_history"
-              className="shadow appearance-none border border-border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-primary"
-              value={medical_history}
-              onChange={(e) => setMedicalHistory(e.target.value)}
-            />
-          </div>
+          <Input
+            label="Medical History"
+            id="medical_history"
+            value={form.medical_history}
+            onChange={handleChange("medical_history")}
+          />
         )}
         {activeTab === "diagnosis" && (
-          <div className="mb-4">
-            <label
-              htmlFor="suspected_exams"
-              className="block text-text text-sm font-bold mb-2"
-            >
-              Diagnose:
-            </label>
-            <input
-              type="text"
-              id="suspected_exams"
-              className="shadow appearance-none border border-border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-primary"
-              value={suspected_exams}
-              onChange={(e) => setSuspectedDiagnosis(e.target.value)}
-            />
-          </div>
+          <Input
+            label="Diagnose"
+            id="suspected_exams"
+            value={form.suspected_exams}
+            onChange={handleChange("suspected_exams")}
+          />
         )}
       </div>
 

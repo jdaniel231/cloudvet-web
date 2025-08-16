@@ -5,16 +5,15 @@ import { createWeight } from "../../services/weight";
 import Modal from "../../components/common/Modal";
 import { useState } from "react";
 
-
 const NewWeight = () => {
   const { clientId, animalId } = useParams();
   const [modalState, setModalState] = useState({
     show: false,
-    title: '',
-    message: '',
-    type: 'success', // 'success' ou 'error'
+    title: "",
+    message: "",
+    type: "success", // 'success' ou 'error'
   });
-  
+
   const navigate = useNavigate();
 
   const handleSubmit = async (formData) => {
@@ -22,31 +21,33 @@ const NewWeight = () => {
       await createWeight(clientId, animalId, formData);
       setModalState({
         show: true,
-        title: 'Cadastro Realizado!',
+        title: "Cadastro Realizado!",
         message: `Peso cadastrado com sucesso!`, // Mensagem dinâmica
-        type: 'success',
+        type: "success",
       });
     } catch (error) {
-      console.error('Erro ao criar peso:', error);
+      console.error("Erro ao criar peso:", error);
       setModalState({
         show: true,
-        title: 'Erro no Cadastro!',
-        message: error.response?.data?.error || 'Ocorreu um erro ao cadastrar o peso. Tente novamente.',
-        type: 'error',
+        title: "Erro no Cadastro!",
+        message:
+          error.response?.data?.error ||
+          "Ocorreu um erro ao cadastrar o peso. Tente novamente.",
+        type: "error",
       });
     }
-  }
+  };
 
   const handleCloseModal = () => {
     setModalState({ ...modalState, show: false });
-    if (modalState.type === 'success') {
+    if (modalState.type === "success") {
       navigate(`/clients/${clientId}/animals/${animalId}`);
     }
   };
 
   const handleCancel = () => {
-    navigate(`/clients/${clientId}/animals/${animalId}`)
-  }
+    navigate(`/clients/${clientId}/animals/${animalId}`);
+  };
 
   return (
     <AnimalDetailsLayout>

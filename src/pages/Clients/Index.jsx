@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { getClients } from '../../services/client';
+import React, { useEffect, useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import { getClients } from "../../services/client";
 
 export default function Clients() {
   const navigate = useNavigate();
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorMsg, setErrorMsg] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
 
@@ -18,8 +18,8 @@ export default function Clients() {
         const data = await getClients();
         setClients(data || []);
       } catch (err) {
-        console.error('Erro ao carregar clientes:', err);
-        setErrorMsg('Não foi possível carregar os clientes.');
+        console.error("Erro ao carregar clientes:", err);
+        setErrorMsg("Não foi possível carregar os clientes.");
       } finally {
         setLoading(false);
       }
@@ -31,10 +31,12 @@ export default function Clients() {
     if (!client || !Array.isArray(client.animals)) return [];
 
     return client.animals
-      .filter(animal => animal && (animal.name || animal.animal_id || animal.id))
-      .map(animal => ({
+      .filter(
+        (animal) => animal && (animal.name || animal.animal_id || animal.id),
+      )
+      .map((animal) => ({
         id: animal.id || animal.animal_id || null,
-        name: animal.name || 'Sem nome'
+        name: animal.name || "Sem nome",
       }));
   };
 
@@ -43,7 +45,7 @@ export default function Clients() {
         const term = searchTerm.toLowerCase();
         const nameMatch = client.name?.toLowerCase().includes(term);
         const animalMatch = getAnimalNames(client).some((a) =>
-          a.name.toLowerCase().includes(term)
+          a.name.toLowerCase().includes(term),
         );
         return nameMatch || animalMatch;
       })
@@ -51,7 +53,10 @@ export default function Clients() {
 
   const indexOfLastClient = currentPage * itemsPerPage;
   const indexOfFirstClient = indexOfLastClient - itemsPerPage;
-  const currentClients = filteredClients.slice(indexOfFirstClient, indexOfLastClient);
+  const currentClients = filteredClients.slice(
+    indexOfFirstClient,
+    indexOfLastClient,
+  );
   const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
@@ -61,7 +66,7 @@ export default function Clients() {
         <h1 className="text-3xl font-bold text-text">Lista de Clientes</h1>
         <button
           className="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300"
-          onClick={() => navigate('/clients/new')}
+          onClick={() => navigate("/clients/new")}
         >
           Novo Cliente
         </button>
@@ -77,7 +82,9 @@ export default function Clients() {
           disabled={loading}
         />
         <div className="flex items-center space-x-2">
-          <label htmlFor="itemsPerPage" className="text-lightText">Itens por página:</label>
+          <label htmlFor="itemsPerPage" className="text-lightText">
+            Itens por página:
+          </label>
           <select
             id="itemsPerPage"
             value={itemsPerPage}
@@ -143,14 +150,19 @@ export default function Clients() {
                                     {animal.name}
                                   </Link>
                                 ) : (
-                                  <span key={index} className="text-xs text-lightText italic">
+                                  <span
+                                    key={index}
+                                    className="text-xs text-lightText italic"
+                                  >
                                     Animal sem ID
                                   </span>
-                                )
+                                ),
                               )}
                             </div>
                           ) : (
-                            <span className="text-lightText italic">Sem animais</span>
+                            <span className="text-lightText italic">
+                              Sem animais
+                            </span>
                           )}
                         </td>
                         <td className="py-3 px-4 whitespace-nowrap text-right text-sm font-medium">
@@ -162,7 +174,9 @@ export default function Clients() {
                           </Link>
                           <button
                             className="bg-primary hover:bg-primary-dark text-white font-bold py-1 px-3 rounded-lg shadow-md transition duration-300"
-                            onClick={() => alert(`Iniciar atendimento para ${client.name}`)}
+                            onClick={() =>
+                              alert(`Iniciar atendimento para ${client.name}`)
+                            }
                           >
                             Atender
                           </button>
@@ -189,8 +203,8 @@ export default function Clients() {
                     onClick={() => paginate(number + 1)}
                     className={`px-4 py-2 border border-border rounded-lg ${
                       currentPage === number + 1
-                        ? 'bg-primary text-white'
-                        : 'text-lightText bg-card hover:bg-background'
+                        ? "bg-primary text-white"
+                        : "text-lightText bg-card hover:bg-background"
                     }`}
                   >
                     {number + 1}

@@ -1,18 +1,17 @@
-import { useParams, useNavigate } from 'react-router-dom';
-import AnimalDetailsLayout from '../../components/Animals/AnimalDetailsLayout';
-import AppointmentForm from '../../components/Appointments/Form';
-import { createAppointment } from '../../services/appoint';
-import Modal from '../../components/common/Modal';
-import { useState } from 'react';
-
+import { useParams, useNavigate } from "react-router-dom";
+import AnimalDetailsLayout from "../../components/Animals/AnimalDetailsLayout";
+import AppointmentForm from "../../components/Appointments/Form";
+import { createAppointment } from "../../services/appoint";
+import Modal from "../../components/common/Modal";
+import { useState } from "react";
 
 const NewAppointment = () => {
   const { clientId, animalId } = useParams();
   const [modalState, setModalState] = useState({
     show: false,
-    title: '',
-    message: '',
-    type: 'success', // 'success' ou 'error'
+    title: "",
+    message: "",
+    type: "success", // 'success' ou 'error'
   });
   const navigate = useNavigate();
 
@@ -21,30 +20,32 @@ const NewAppointment = () => {
       await createAppointment(clientId, animalId, formData);
       setModalState({
         show: true,
-        title: 'Cadastro Realizado!',
+        title: "Cadastro Realizado!",
         message: `Consulta cadastrada com sucesso!`, // Mensagem dinâmica
-        type: 'success',
+        type: "success",
       });
     } catch (error) {
-      console.error('Erro ao criar consulta:', error);
+      console.error("Erro ao criar consulta:", error);
       setModalState({
         show: true,
-        title: 'Erro no Cadastro!',
-        message: error.response?.data?.error || 'Ocorreu um erro ao cadastrar a consulta. Tente novamente.',
-        type: 'error',
+        title: "Erro no Cadastro!",
+        message:
+          error.response?.data?.error ||
+          "Ocorreu um erro ao cadastrar a consulta. Tente novamente.",
+        type: "error",
       });
     }
   };
 
   const handleCloseModal = () => {
     setModalState({ ...modalState, show: false });
-    if (modalState.type === 'success') {
+    if (modalState.type === "success") {
       navigate(`/clients/${clientId}/animals/${animalId}`);
     }
   };
 
   const handleCancel = () => {
-   navigate(`/clients/${clientId}/animals/${animalId}`);
+    navigate(`/clients/${clientId}/animals/${animalId}`);
   };
 
   return (

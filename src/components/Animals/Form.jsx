@@ -1,7 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Input from "../common/FormFields/Input";
+import Select from "../common/FormFields/Select";
+import Checkbox from "../common/FormFields/Checkbox";
 
-export default function AnimalForm({ clientId, initialData = {}, onSubmit, onCancel, isEditMode = false }) {
+export default function AnimalForm({
+  clientId,
+  initialData = {},
+  onSubmit,
+  onCancel,
+  isEditMode = false,
+}) {
   const [form, setForm] = useState({
     name: initialData.name ?? "",
     species: initialData.species ?? "",
@@ -51,96 +60,63 @@ export default function AnimalForm({ clientId, initialData = {}, onSubmit, onCan
 
   return (
     <form onSubmit={handleSubmit}>
-      <div className="mb-4">
-        <label htmlFor="name" className="block text-text text-sm font-bold mb-2">
-          Nome do Animal:
-        </label>
-        <input
-          type="text"
-          id="name"
-          className="shadow appearance-none border border-border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-primary"
-          value={form.name}
-          onChange={handleChange("name")}
-          required
-        />
-      </div>
+      <Input
+        label="Nome do Animal"
+        id="name"
+        value={form.name}
+        onChange={handleChange("name")}
+        required
+      />
 
-      <div className="mb-4">
-        <label htmlFor="species" className="block text-text text-sm font-bold mb-2">
-          Espécie:
-        </label>
-        <select
-          id="species"
-          className="shadow appearance-none border border-border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-primary"
-          value={form.species}
-          onChange={handleChange("species")}
-          required
-        >
-          <option value="">Selecione</option>
-          <option value="cachorro">Canino</option>
-          <option value="gato">Felino</option>
-        </select>
-      </div>
+      <Select
+        label="Espécie"
+        id="species"
+        value={form.species}
+        onChange={handleChange("species")}
+        required
+      >
+        <option value="">Selecione</option>
+        <option value="cachorro">Canino</option>
+        <option value="gato">Felino</option>
+      </Select>
 
-      <div className="mb-4">
-        <label htmlFor="breed" className="block text-text text-sm font-bold mb-2">
-          Raça:
-        </label>
-        <input
-          type="text"
-          id="breed"
-          className="shadow appearance-none border border-border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-primary"
-          value={form.breed}
-          onChange={handleChange("breed")}
-        />
-      </div>
+      <Input
+        label="Raça"
+        id="breed"
+        value={form.breed}
+        onChange={handleChange("breed")}
+      />
 
-      <div className="mb-4">
-        <label htmlFor="age" className="block text-text text-sm font-bold mb-2">
-          Idade (anos):
-        </label>
-        <input
-          type="number"
-          id="age"
-          min={0}
-          step={1}
-          inputMode="numeric"
-          className="shadow appearance-none border border-border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-primary"
-          value={form.age}
-          onChange={handleChange("age")}
-          required
-        />
-      </div>
+      <Input
+        label="Idade (anos)"
+        id="age"
+        type="number"
+        min={0}
+        step={1}
+        inputMode="numeric"
+        value={form.age}
+        onChange={handleChange("age")}
+        required
+      />
 
-      <div className="mb-4">
-        <label htmlFor="sex" className="block text-text text-sm font-bold mb-2">
-          Sexo:
-        </label>
-        <select
-          id="sex"
-          className="shadow appearance-none border border-border rounded w-full py-2 px-3 text-text leading-tight focus:outline-none focus:shadow-outline focus:ring-2 focus:ring-primary"
-          value={form.sex}
-          onChange={handleChange("sex")}
-          required
-        >
-          <option value="">Selecione</option>
-          <option value="Macho">Macho</option>
-          <option value="Fêmea">Fêmea</option>
-        </select>
-      </div>
+      <Select
+        label="Sexo"
+        id="sex"
+        value={form.sex}
+        onChange={handleChange("sex")}
+        required
+      >
+        <option value="">Selecione</option>
+        <option value="Macho">Macho</option>
+        <option value="Fêmea">Fêmea</option>
+      </Select>
 
-      <div className="mb-4 flex items-center">
-        <input
-          type="checkbox"
-          id="castrated"
-          className="mr-2 h-4 w-4 text-primary focus:ring-primary border-border rounded"
-          checked={form.castrated}
-          onChange={handleChange("castrated")}
-        />
-        <label htmlFor="castrated" className="text-text text-sm font-bold">
-          Castrado(a)
-        </label>
-      </div>
+      <Checkbox
+        label="Castrado(a)"
+        id="castrated"
+        checked={form.castrated}
+        onChange={handleChange("castrated")}
+      />
 
       <div className="flex justify-end space-x-2">
         <button
@@ -148,7 +124,13 @@ export default function AnimalForm({ clientId, initialData = {}, onSubmit, onCan
           className="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-60"
           disabled={submitting}
         >
-          {submitting ? (isEditMode ? "Atualizando..." : "Cadastrando...") : (isEditMode ? "Atualizar" : "Cadastrar")}
+          {submitting
+            ? isEditMode
+              ? "Atualizando..."
+              : "Cadastrando..."
+            : isEditMode
+              ? "Atualizar"
+              : "Cadastrar"}
         </button>
         <button
           type="button"

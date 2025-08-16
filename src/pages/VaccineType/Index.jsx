@@ -58,7 +58,7 @@ export default function Index() {
 
       // Atualiza lista local removendo o item excluído
       setVaccineTypes((prev) =>
-        prev.filter((v) => v.id !== selectedVaccineType.id)
+        prev.filter((v) => v.id !== selectedVaccineType.id),
       );
 
       setModalState({

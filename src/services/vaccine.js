@@ -1,51 +1,37 @@
-import { api } from "./api";  
+import { api } from "./api";
+import { handleApiCall } from "./apiUtils";
 
 export const getVaccines = async (clientId, animalId) => {
-  try{
-    const response = await api.get(`/clients/${clientId}/animals/${animalId}/vaccines`);
-    return response.data;
-  } catch (error) {
-    console.error("Erro ao buscar vacinas:", error.response?.data || error.message);
-    throw error;
-  }
-}
+  return handleApiCall(
+    () => api.get(`/clients/${clientId}/animals/${animalId}/vaccines`),
+    "Erro ao buscar vacinas:"
+  );
+};
 
 export const createVaccine = async (clientId, animalId, vaccine) => {
-  try {
-    const response = await api.post(`/clients/${clientId}/animals/${animalId}/vaccines`, { vaccine });
-    return response.data;
-  } catch (error) {
-    console.error("Erro ao criar vacina:", error.response?.data || error.message);
-    throw error;
-  }
+  return handleApiCall(
+    () => api.post(`/clients/${clientId}/animals/${animalId}/vaccines`, { vaccine }),
+    "Erro ao criar vacina:"
+  );
 };
 
 export const updateVaccine = async (clientId, animalId, vaccineId, vaccine) => {
-  try {
-    const response = await api.put(`/clients/${clientId}/animals/${animalId}/vaccines/${vaccineId}`, { vaccine });
-    return response.data;
-  } catch (error) {
-    console.error("Erro ao atualizar vacina:", error.response?.data || error.message);
-    throw error;
-  }
+  return handleApiCall(
+    () => api.put(`/clients/${clientId}/animals/${animalId}/vaccines/${vaccineId}`, { vaccine }),
+    "Erro ao atualizar vacina:"
+  );
 };
 
 export const deleteVaccine = async (clientId, animalId, vaccineId) => {
-  try {
-    const response = await api.delete(`/clients/${clientId}/animals/${animalId}/vaccines/${vaccineId}`);
-    return response.data;
-  } catch (error) {
-    console.error("Erro ao excluir vacina:", error.response?.data || error.message);
-    throw error;
-  }
+  return handleApiCall(
+    () => api.delete(`/clients/${clientId}/animals/${animalId}/vaccines/${vaccineId}`),
+    "Erro ao excluir vacina:"
+  );
 };
 
 export const getVaccineById = async (clientId, animalId, vaccineId) => {
-  try {
-    const response = await api.get(`/clients/${clientId}/animals/${animalId}/vaccines/${vaccineId}`);
-    return response.data;
-  } catch (error) {
-    console.error("Erro ao buscar vacina com ID:", error.response?.data || error.message);
-    throw error;
-  }
+  return handleApiCall(
+    () => api.get(`/clients/${clientId}/animals/${animalId}/vaccines/${vaccineId}`),
+    "Erro ao buscar vacina com ID:"
+  );
 };

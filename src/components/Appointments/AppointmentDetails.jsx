@@ -1,7 +1,7 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const AppointmentDetails = ({ appointment, clientId, animalId, onClose }) => {
+const AppointmentDetails = ({ appointment, clientId, animalId }) => {
   const navigate = useNavigate();
 
   if (!appointment) {
@@ -33,7 +33,11 @@ const AppointmentDetails = ({ appointment, clientId, animalId, onClose }) => {
       </div>
       <div className="mt-6 flex justify-end">
         <button
-          onClick={() => navigate(`/clients/${clientId}/animals/${animalId}/appointments/new`)}
+          onClick={() =>
+            navigate(
+              `/clients/${clientId}/animals/${animalId}/appointments/new`,
+            )
+          }
           className="bg-secondary hover:bg-secondary-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
         >
           Nova Consulta

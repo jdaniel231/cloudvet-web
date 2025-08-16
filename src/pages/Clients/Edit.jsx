@@ -1,18 +1,21 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { deleteClient, getClientById, updateClient } from "../../services/client";
+import {
+  deleteClient,
+  getClientById,
+  updateClient,
+} from "../../services/client";
 import Modal from "../../components/common/Modal";
 import ClientForm from "../../components/Clients/Form";
 
 const EditClient = () => {
-
   const { id } = useParams();
   const [client, setClient] = useState(null);
   const [modalState, setModalState] = useState({
     show: false,
-    title: '',
-    message: '',
-    type: 'success',
+    title: "",
+    message: "",
+    type: "success",
   });
   const [showConfirmModal, setShowConfirmModal] = useState(false); // Novo estado para o modal de confirmação
   const navigate = useNavigate();
@@ -20,12 +23,11 @@ const EditClient = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        
         const clientData = await getClientById(id);
         setClient(clientData);
       } catch (err) {
         console.error(err);
-      } 
+      }
     };
 
     if (id) {
@@ -36,29 +38,36 @@ const EditClient = () => {
   const handleSubmit = async (clientData) => {
     try {
       await updateClient(id, clientData);
-      console.log('Cliente atualizado:');
+      console.log("Cliente atualizado:");
       setModalState({
         show: true,
-        title: 'Atualização Realizada!',
+        title: "Atualização Realizada!",
         message: `Cliente ${clientData.name} atualizado com sucesso!`,
-        type: 'success',
+        type: "success",
       });
     } catch (error) {
-      console.error('Erro ao atualizar cliente:', error);
+      console.error("Erro ao atualizar cliente:", error);
       setModalState({
         show: true,
-        title: 'Erro no Atualizar!',
-        message: error.response?.data?.error || 'Ocorreu um erro ao atualizar o cliente. Tente novamente.',
-        type: 'error',
+        title: "Erro no Atualizar!",
+        message:
+          error.response?.data?.error ||
+          "Ocorreu um erro ao atualizar o cliente. Tente novamente.",
+        type: "error",
       });
     }
-  }
+  };
 
   const handleCloseModal = () => {
     setModalState({ ...modalState, show: false });
-    if (modalState.type === 'success' && modalState.title === 'Exclusão Realizada!') { // Redireciona após exclusão
-      navigate('/clients');
-    } else if (modalState.type === 'success') { // Redireciona após atualização
+    if (
+      modalState.type === "success" &&
+      modalState.title === "Exclusão Realizada!"
+    ) {
+      // Redireciona após exclusão
+      navigate("/clients");
+    } else if (modalState.type === "success") {
+      // Redireciona após atualização
       navigate(`/clients/${id}`);
     }
   };
@@ -71,20 +80,22 @@ const EditClient = () => {
     setShowConfirmModal(false); // Fecha o modal de confirmação
     try {
       await deleteClient(id);
-      console.log('Cliente deletado com sucesso!');
+      console.log("Cliente deletado com sucesso!");
       setModalState({
         show: true,
-        title: 'Exclusão Realizada!',
+        title: "Exclusão Realizada!",
         message: `Cliente ${client.name} excluído com sucesso!`,
-        type: 'success',
+        type: "success",
       });
     } catch (error) {
-      console.error('Erro ao excluir cliente:', error);
+      console.error("Erro ao excluir cliente:", error);
       setModalState({
         show: true,
-        title: 'Erro no Excluir!',
-        message: error.response?.data?.error || 'Ocorreu um erro ao excluir o cliente. Tente novamente.',
-        type: 'error',
+        title: "Erro no Excluir!",
+        message:
+          error.response?.data?.error ||
+          "Ocorreu um erro ao excluir o cliente. Tente novamente.",
+        type: "error",
       });
     }
   };
@@ -92,10 +103,15 @@ const EditClient = () => {
   return (
     <>
       <div className="container mx-auto p-4">
-       
         <h1 className="text-3xl font-bold text-text mb-6">Editar Cliente</h1>
         <div className="bg-card shadow-md rounded-lg p-6">
-          {client && <ClientForm initialData={client} onSubmit={handleSubmit} isEditMode={true} />}
+          {client && (
+            <ClientForm
+              initialData={client}
+              onSubmit={handleSubmit}
+              isEditMode={true}
+            />
+          )}
           <div className="flex items-center justify-between mt-4">
             <button
               type="button"

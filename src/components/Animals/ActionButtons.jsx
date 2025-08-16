@@ -1,55 +1,62 @@
-import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCalendar, faWeight, faSyringe, faFile, faPrescriptionBottle, faRedo, faPaw, faClinicMedical } from '@fortawesome/free-solid-svg-icons';
+import React from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faWeight,
+  faSyringe,
+  faFile,
+  faPrescriptionBottle,
+  faRedo,
+  faPaw,
+  faClinicMedical,
+} from "@fortawesome/free-solid-svg-icons";
 
 const ActionButtons = ({ onViewChange }) => {
-
   const buttons = [
-    { 
-      label: "Consultas", 
+    {
+      label: "Consultas",
       view: "consultations",
-      color: "bg-primary hover:bg-primary-dark", 
-      icon: faClinicMedical, 
+      color: "bg-primary hover:bg-primary-dark",
+      icon: faClinicMedical,
     },
-    { 
-      label: "Pesos", 
+    {
+      label: "Pesos",
       view: "weights",
-      color: "bg-secondary hover:bg-secondary-dark", 
+      color: "bg-secondary hover:bg-secondary-dark",
       icon: faWeight,
     },
-    { 
-      label: "Vacinas", 
+    {
+      label: "Vacinas",
       view: "vaccines",
-      color: "bg-primary hover:bg-primary-dark", 
-      icon: faSyringe 
+      color: "bg-primary hover:bg-primary-dark",
+      icon: faSyringe,
     },
-    { 
-      label: "Anexos", 
+    {
+      label: "Anexos",
       view: "attachments",
-      color: "bg-accent hover:bg-accent-dark", 
-      icon: faFile 
+      color: "bg-accent hover:bg-accent-dark",
+      icon: faFile,
     },
-    { 
-      label: "Receitas", 
+    {
+      label: "Receitas",
       view: "prescriptions",
-      color: "bg-secondary hover:bg-secondary-dark", 
-      icon: faPrescriptionBottle 
+      color: "bg-secondary hover:bg-secondary-dark",
+      icon: faPrescriptionBottle,
     },
-    { 
-      label: "Agendar Retorno", 
+    {
+      label: "Agendar Retorno",
       view: "scheduleReturn",
-      color: "bg-primary hover:bg-primary-dark", 
-      icon: faRedo 
+      color: "bg-primary hover:bg-primary-dark",
+      icon: faRedo,
     },
   ];
 
   return (
-    <div className='bg-card shadow-md rounded-lg p-6'>
-      <h3 className='text-xl font-bold text-text mb-4 flex items-center'>
+    <div className="bg-card shadow-md rounded-lg p-6">
+      <h3 className="text-xl font-bold text-text mb-4 flex items-center">
         <FontAwesomeIcon icon={faPaw} className="text-secondary mr-2" />
         Ações e Registros
       </h3>
-      <div className='grid grid-cols-1 sm:grid-cols-2 gap-3'>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {buttons.map((btn, idx) => (
           <button
             key={idx}
@@ -57,7 +64,7 @@ const ActionButtons = ({ onViewChange }) => {
             onClick={() => onViewChange(btn.view)}
           >
             <FontAwesomeIcon icon={btn.icon} className="mr-2" />
-            <span className='font-semibold'>{btn.label}</span>
+            <span className="font-semibold">{btn.label}</span>
           </button>
         ))}
       </div>
