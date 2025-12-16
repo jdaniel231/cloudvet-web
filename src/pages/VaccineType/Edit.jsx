@@ -69,19 +69,14 @@ export default function Edit() {
 
   return (
     <>
-      <div className="container mx-auto p-4">
-        <h1 className="text-3xl font-bold text-text mb-6">
-          Editar Tipo de Vacina
-        </h1>
-        <div className="bg-card shadow-md rounded-lg p-6">
-          {vaccineType && (
-            <VaccineTypeForm
-              initialData={vaccineType}
-              onSubmit={handleSubmit}
-              onCancel={handleCancel}
-            />
-          )}
-        </div>
+      <div className="w-full max-w-4xl mx-auto p-4 md:p-8 flex justify-center">
+        {vaccineType && (
+          <VaccineTypeForm
+            initialData={vaccineType}
+            onSubmit={handleSubmit}
+            onCancel={handleCancel}
+          />
+        )}
       </div>
 
       <Modal
