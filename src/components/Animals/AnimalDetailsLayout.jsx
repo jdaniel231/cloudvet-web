@@ -27,7 +27,7 @@ const AnimalDetailsLayout = ({ children }) => {
   }
 
   return (
-    <div className="container mx-auto p-4 ">
+    <div className="w-full p-6 max-w-[1920px] mx-auto">
       <AnimalHeader client={client} animal={animal} />
       {React.Children.map(children, (child) =>
         React.cloneElement(child, { animal, client, clientId, animalId }),

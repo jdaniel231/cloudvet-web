@@ -10,7 +10,7 @@ const NewAnimal = () => {
   const navigate = useNavigate();
 
   const [clientName, setClientName] = useState(""); // Novo estado para o nome do cliente
-  
+
   const [error, setError] = useState(null);
   const [modalState, setModalState] = useState({
     show: false,
@@ -36,7 +36,7 @@ const NewAnimal = () => {
   }, [clientId]);
 
   const handleSubmit = async (animalData) => {
-    
+
     setError(null);
     try {
       await createAnimalForClient(clientId, animalData);
@@ -73,26 +73,30 @@ const NewAnimal = () => {
 
   return (
     <>
-      <div className="container mx-auto p-4">
-        <h1 className="text-3xl font-bold text-text mb-6">
-          Cadastrar Novo Animal para {clientName}
-        </h1>
-
-        <div className="bg-card shadow-md rounded-lg p-6">
-          {error && (
-            <div
-              className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4"
-              role="alert"
-            >
-              {error}
-            </div>
-          )}
-          <AnimalForm
-            onSubmit={handleSubmit}
-            onCancel={handleCancel}
-            clientId={clientId}
-          />
+      <div className="w-full max-w-4xl mx-auto p-6">
+        <div className="flex flex-col gap-1 mb-8">
+          <h1 className="text-3xl font-bold text-slate-800 flex items-center gap-2">
+            Novo Paciente
+          </h1>
+          <p className="text-slate-500">
+            Cadastrando animal para o tutor <span className="font-bold text-slate-700">{clientName}</span>
+          </p>
         </div>
+
+        {error && (
+          <div
+            className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl relative mb-6 flex items-center gap-2"
+            role="alert"
+          >
+            <span className="font-bold">Erro:</span> {error}
+          </div>
+        )}
+
+        <AnimalForm
+          onSubmit={handleSubmit}
+          onCancel={handleCancel}
+          clientId={clientId}
+        />
       </div>
 
       {/* Modal de Sucesso */}

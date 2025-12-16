@@ -3,6 +3,15 @@ import { useNavigate } from "react-router-dom";
 import Input from "../common/FormFields/Input";
 import Select from "../common/FormFields/Select";
 import Checkbox from "../common/FormFields/Checkbox";
+import {
+  PawPrint,
+  Tag,
+  Calendar,
+  Weight,
+  Palette,
+  Save,
+  X
+} from "lucide-react";
 
 export default function AnimalForm({
   clientId,
@@ -43,7 +52,6 @@ export default function AnimalForm({
 
       await onSubmit?.(payload);
 
-      // navega SÓ após salvar com sucesso
       if (isEditMode) {
         navigate(`/clients/${clientId}/animals/${initialData.id}`);
       } else {
@@ -59,86 +67,121 @@ export default function AnimalForm({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Input
-        label="Nome do Animal"
-        id="name"
-        value={form.name}
-        onChange={handleChange("name")}
-        required
-      />
+    <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden">
 
-      <Select
-        label="Espécie"
-        id="species"
-        value={form.species}
-        onChange={handleChange("species")}
-        required
-      >
-        <option value="">Selecione</option>
-        <option value="cachorro">Canino</option>
-        <option value="gato">Felino</option>
-      </Select>
+      {/* Header */}
+      <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
+        <div className="p-2 bg-cyan-100 text-cyan-600 rounded-lg">
+          <PawPrint className="h-5 w-5" />
+        </div>
+        <h3 className="font-bold text-slate-700">Dados do Paciente</h3>
+      </div>
 
-      <Input
-        label="Raça"
-        id="breed"
-        value={form.breed}
-        onChange={handleChange("breed")}
-      />
+      {/* Content */}
+      <div className="p-8 grid grid-cols-1 md:grid-cols-12 gap-6">
+        {/* Name */}
+        <div className="col-span-1 md:col-span-12">
+          <Input
+            label="Nome do Animal"
+            id="name"
+            value={form.name}
+            onChange={handleChange("name")}
+            required
+            icon={Tag}
+            placeholder="Ex: Rex"
+          />
+        </div>
 
-      <Input
-        label="Idade (anos)"
-        id="age"
-        type="number"
-        min={0}
-        step={1}
-        inputMode="numeric"
-        value={form.age}
-        onChange={handleChange("age")}
-        required
-      />
+        {/* Species & Breed */}
+        <div className="col-span-1 md:col-span-6">
+          <Select
+            label="Espécie"
+            id="species"
+            value={form.species}
+            onChange={handleChange("species")}
+            required
+          >
+            <option value="">Selecione...</option>
+            <option value="cachorro">Canino</option>
+            <option value="gato">Felino</option>
+          </Select>
+        </div>
 
-      <Select
-        label="Sexo"
-        id="sex"
-        value={form.sex}
-        onChange={handleChange("sex")}
-        required
-      >
-        <option value="">Selecione</option>
-        <option value="Macho">Macho</option>
-        <option value="Fêmea">Fêmea</option>
-      </Select>
+        <div className="col-span-1 md:col-span-6">
+          <Input
+            label="Raça"
+            id="breed"
+            value={form.breed}
+            onChange={handleChange("breed")}
+            placeholder="Ex: Vira-lata"
+            icon={Palette} // Using Palette as a proxy for visual type/breed
+          />
+        </div>
 
-      <Checkbox
-        label="Castrado(a)"
-        id="castrated"
-        checked={form.castrated}
-        onChange={handleChange("castrated")}
-      />
+        {/* Age, Sex & Status */}
+        <div className="col-span-1 md:col-span-4">
+          <Input
+            label="Idade (anos)"
+            id="age"
+            type="number"
+            min={0}
+            step={1}
+            inputMode="numeric"
+            value={form.age}
+            onChange={handleChange("age")}
+            required
+            icon={Calendar}
+          />
+        </div>
 
-      <div className="flex justify-end space-x-2">
+        <div className="col-span-1 md:col-span-4">
+          <Select
+            label="Sexo"
+            id="sex"
+            value={form.sex}
+            onChange={handleChange("sex")}
+            required
+          >
+            <option value="">Selecione...</option>
+            <option value="Macho">Macho</option>
+            <option value="Fêmea">Fêmea</option>
+          </Select>
+        </div>
+
+        <div className="col-span-1 md:col-span-4 flex items-center pt-6">
+          <Checkbox
+            label="Animal Castrado"
+            id="castrated"
+            checked={form.castrated}
+            onChange={handleChange("castrated")}
+          />
+        </div>
+      </div>
+
+      {/* Footer Actions */}
+      <div className="bg-slate-50 p-6 border-t border-slate-100 flex justify-end gap-3">
+        <button
+          type="button"
+          onClick={handleCancel}
+          disabled={submitting}
+          className="flex items-center gap-2 px-6 py-2.5 text-slate-500 font-semibold hover:text-slate-700 hover:bg-slate-200 rounded-xl transition-all"
+        >
+          <X className="h-4 w-4" />
+          Cancelar
+        </button>
         <button
           type="submit"
-          className="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline disabled:opacity-60"
           disabled={submitting}
+          className="flex items-center gap-2 bg-gradient-to-r from-slate-900 to-slate-800 hover:from-slate-800 hover:to-slate-700 text-white px-8 py-2.5 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 font-bold tracking-wide disabled:opacity-70 disabled:cursor-not-allowed"
         >
+          <Save className="h-4 w-4 text-emerald-400" />
           {submitting
             ? isEditMode
               ? "Atualizando..."
               : "Cadastrando..."
             : isEditMode
-              ? "Atualizar"
+              ? "Salvar"
               : "Cadastrar"}
-        </button>
-        <button
-          type="button"
-          onClick={handleCancel}
-          className="bg-lightText hover:bg-text text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-          disabled={submitting}
-        >
-          Cancelar
         </button>
       </div>
     </form>

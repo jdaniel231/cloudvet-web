@@ -1,6 +1,18 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { getClients } from "../../services/client";
+import {
+  Users,
+  Plus,
+  Search,
+  Eye,
+  Stethoscope,
+  ChevronLeft,
+  ChevronRight,
+  Dog,
+  Cat,
+  PawPrint
+} from "lucide-react";
 
 export default function Clients() {
   const navigate = useNavigate();
@@ -37,18 +49,19 @@ export default function Clients() {
       .map((animal) => ({
         id: animal.id || animal.animal_id || null,
         name: animal.name || "Sem nome",
+        species: animal.species || ""
       }));
   };
 
   const filteredClients = Array.isArray(clients)
     ? clients.filter((client) => {
-        const term = searchTerm.toLowerCase();
-        const nameMatch = client.name?.toLowerCase().includes(term);
-        const animalMatch = getAnimalNames(client).some((a) =>
-          a.name.toLowerCase().includes(term),
-        );
-        return nameMatch || animalMatch;
-      })
+      const term = searchTerm.toLowerCase();
+      const nameMatch = client.name?.toLowerCase().includes(term);
+      const animalMatch = getAnimalNames(client).some((a) =>
+        a.name.toLowerCase().includes(term),
+      );
+      return nameMatch || animalMatch;
+    })
     : [];
 
   const indexOfLastClient = currentPage * itemsPerPage;
@@ -60,30 +73,87 @@ export default function Clients() {
   const totalPages = Math.ceil(filteredClients.length / itemsPerPage);
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
+  // Helper to get initials
+  const getInitials = (name) => {
+    return name
+      ?.split(" ")
+      .map((n) => n[0])
+      .slice(0, 2)
+      .join("")
+      .toUpperCase();
+  };
+
+  // Helper to get animal style
+  const getAnimalStyle = (species) => {
+    const s = species?.toLowerCase();
+    if (s === 'cachorro' || s === 'dog' || s === 'canino') {
+      return {
+        bg: "bg-cyan-50",
+        text: "text-cyan-700",
+        border: "border-cyan-100",
+        hoverBg: "hover:bg-cyan-100",
+        icon: Dog
+      };
+    } else if (s === 'gato' || s === 'cat' || s === 'felino') {
+      return {
+        bg: "bg-purple-50",
+        text: "text-purple-700",
+        border: "border-purple-100",
+        hoverBg: "hover:bg-purple-100",
+        icon: Cat
+      };
+    }
+    return {
+      bg: "bg-slate-100",
+      text: "text-slate-600",
+      border: "border-slate-200",
+      hoverBg: "hover:bg-slate-200",
+      icon: PawPrint
+    };
+  };
+
   return (
-    <div className="container mx-auto p-4">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold text-text">Lista de Clientes</h1>
+    <div className="w-full max-w-[1920px] mx-auto p-6 space-y-8">
+      {/* Header */}
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-3">
+            <div className="p-2.5 bg-gradient-to-br from-indigo-500 to-indigo-600 rounded-xl shadow-lg shadow-indigo-500/20 text-white">
+              <Users className="h-6 w-6" />
+            </div>
+            Gestão de Clientes
+          </h1>
+          <p className="text-slate-500 text-sm mt-1 ml-14">
+            Gerencie proprietários e seus animais
+          </p>
+        </div>
+
         <button
-          className="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-300"
+          className="group flex items-center gap-2 bg-slate-900 hover:bg-slate-800 text-white px-5 py-2.5 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5"
           onClick={() => navigate("/clients/new")}
         >
-          Novo Cliente
+          <Plus className="h-4 w-4 text-indigo-400 group-hover:text-indigo-300 transition-colors" />
+          <span className="font-semibold text-sm">Novo Cliente</span>
         </button>
       </div>
 
-      <div className="mb-4 flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0 sm:space-x-4">
-        <input
-          type="text"
-          placeholder="Pesquisar clientes ou animais..."
-          className="w-full sm:w-2/3 p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-text"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          disabled={loading}
-        />
-        <div className="flex items-center space-x-2">
-          <label htmlFor="itemsPerPage" className="text-lightText">
-            Itens por página:
+      {/* Controls Bar */}
+      <div className="flex flex-col sm:flex-row gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-100">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <input
+            type="text"
+            placeholder="Buscar por nome, email ou animal..."
+            className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all text-slate-700 text-sm placeholder:text-slate-400"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            disabled={loading}
+          />
+        </div>
+
+        <div className="flex items-center gap-3 pl-4 sm:border-l border-slate-100">
+          <label htmlFor="itemsPerPage" className="text-sm font-medium text-slate-500 whitespace-nowrap">
+            Exibir:
           </label>
           <select
             id="itemsPerPage"
@@ -92,7 +162,7 @@ export default function Clients() {
               setItemsPerPage(Number(e.target.value));
               setCurrentPage(1);
             }}
-            className="p-2 border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary text-text"
+            className="py-2.5 pl-3 pr-8 bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500 text-sm font-semibold text-slate-700 cursor-pointer outline-none"
             disabled={loading}
           >
             <option value="5">5</option>
@@ -103,83 +173,122 @@ export default function Clients() {
         </div>
       </div>
 
-      <div className="bg-card shadow-md rounded-lg p-6 min-h-[120px]">
-        {loading && <p className="text-lightText italic">Carregando...</p>}
+      {/* Table Card */}
+      <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden min-h-[400px] flex flex-col">
+        {loading && (
+          <div className="flex-1 flex flex-col items-center justify-center p-10 text-slate-400 gap-3">
+            <div className="w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
+            <p className="text-sm font-medium">Carregando dados...</p>
+          </div>
+        )}
 
-        {!loading && errorMsg && <p className="text-red-500">{errorMsg}</p>}
+        {!loading && errorMsg && (
+          <div className="flex-1 flex flex-col items-center justify-center p-10 text-red-500 gap-2">
+            <p className="font-semibold">Erro</p>
+            <p className="text-sm">{errorMsg}</p>
+          </div>
+        )}
 
         {!loading && !errorMsg && filteredClients.length === 0 && (
-          <p className="text-lightText">Nenhum cliente encontrado.</p>
+          <div className="flex-1 flex flex-col items-center justify-center p-10 text-slate-400 gap-3">
+            <div className="p-4 bg-slate-50 rounded-full">
+              <Search className="h-8 w-8 text-slate-300" />
+            </div>
+            <p className="font-medium">Nenhum cliente encontrado</p>
+            <button onClick={() => setSearchTerm("")} className="text-indigo-600 text-sm font-semibold hover:underline">
+              Limpar busca
+            </button>
+          </div>
         )}
 
         {!loading && !errorMsg && filteredClients.length > 0 && (
           <>
             <div className="overflow-x-auto">
-              <table className="min-w-full bg-card">
+              <table className="min-w-full">
                 <thead>
-                  <tr>
-                    <th className="py-2 px-4 border-b border-border bg-background text-left text-xs font-semibold text-lightText uppercase tracking-wider">
-                      Nome
+                  <tr className="bg-slate-50/50 border-b border-slate-100">
+                    <th className="py-4 px-6 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      Cliente
                     </th>
-                    <th className="py-2 px-4 border-b border-border bg-background text-left text-xs font-semibold text-lightText uppercase tracking-wider">
-                      Animais
+                    <th className="py-4 px-6 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      Animais Associados
                     </th>
-                    <th className="py-2 px-4 border-b border-border bg-background"></th>
+                    <th className="py-4 px-6 text-right text-xs font-bold text-slate-400 uppercase tracking-wider">
+                      Ações
+                    </th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-slate-50">
                   {currentClients.map((client) => {
                     const animals = getAnimalNames(client);
                     return (
-                      <tr key={client.id} className="hover:bg-background">
-                        <td className="py-3 px-4 whitespace-nowrap">
-                          <p className="text-lg font-semibold text-text">
-                            {client.name}
-                          </p>
+                      <tr key={client.id} className="group hover:bg-slate-50/80 transition-colors">
+                        <td className="py-4 px-6">
+                          <div className="flex items-center gap-4">
+                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-violet-100 text-indigo-600 flex items-center justify-center font-bold text-sm shadow-sm border border-indigo-100/50">
+                              {getInitials(client.name)}
+                            </div>
+                            <div>
+                              <h3 className="font-bold text-slate-700 text-sm group-hover:text-indigo-700 transition-colors">
+                                {client.name}
+                              </h3>
+                              <p className="text-xs text-slate-400">
+                                {client.contact || "Sem contato"}
+                              </p>
+                            </div>
+                          </div>
                         </td>
-                        <td className="py-3 px-4 whitespace-nowrap">
+
+                        <td className="py-4 px-6">
                           {animals.length > 0 ? (
                             <div className="flex flex-wrap gap-2">
-                              {animals.map((animal, index) =>
-                                animal.id ? (
+                              {animals.map((animal, index) => {
+                                const style = getAnimalStyle(animal.species);
+                                const Icon = style.icon;
+
+                                return animal.id ? (
                                   <Link
                                     key={animal.id}
                                     to={`/clients/${client.id}/animals/${animal.id}`}
-                                    className="bg-primary-light text-primary-dark text-xs font-medium px-2.5 py-0.5 rounded-full hover:underline"
+                                    className={`flex items-center gap-1.5 px-3 py-1 ${style.bg} ${style.hoverBg} ${style.text} hover:text-opacity-80 text-xs font-semibold rounded-full transition-colors border ${style.border}`}
                                   >
+                                    <Icon className="h-3 w-3" />
                                     {animal.name}
                                   </Link>
                                 ) : (
                                   <span
                                     key={index}
-                                    className="text-xs text-lightText italic"
+                                    className="px-2 py-1 bg-slate-100 text-slate-500 text-xs rounded-full"
                                   >
-                                    Animal sem ID
+                                    {animal.name}
                                   </span>
-                                ),
-                              )}
+                                );
+                              })}
                             </div>
                           ) : (
-                            <span className="text-lightText italic">
-                              Sem animais
+                            <span className="text-slate-400 text-xs italic">
+                              Nenhum animal cadastrado
                             </span>
                           )}
                         </td>
-                        <td className="py-3 px-4 whitespace-nowrap text-right text-sm font-medium">
-                          <Link
-                            to={`/clients/${client.id}`}
-                            className="bg-secondary hover:bg-secondary-dark text-white font-bold py-1 px-3 rounded-lg shadow-md transition duration-300 mr-2"
-                          >
-                            Ver Detalhes
-                          </Link>
-                          <button
-                            className="bg-primary hover:bg-primary-dark text-white font-bold py-1 px-3 rounded-lg shadow-md transition duration-300"
-                            onClick={() =>
-                              alert(`Iniciar atendimento para ${client.name}`)
-                            }
-                          >
-                            Atender
-                          </button>
+
+                        <td className="py-4 px-6">
+                          <div className="flex items-center justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+                            <Link
+                              to={`/clients/${client.id}`}
+                              className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+                              title="Ver Detalhes"
+                            >
+                              <Eye className="h-4 w-4" />
+                            </Link>
+                            <button
+                              onClick={() => alert(`Iniciar atendimento para ${client.name}`)}
+                              className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
+                              title="Iniciar Atendimento"
+                            >
+                              <Stethoscope className="h-4 w-4" />
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     );
@@ -188,35 +297,50 @@ export default function Clients() {
               </table>
             </div>
 
+            {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex justify-center mt-4 space-x-2">
-                <button
-                  onClick={() => paginate(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="px-4 py-2 border border-border rounded-lg text-lightText bg-card hover:bg-background disabled:opacity-50"
-                >
-                  Anterior
-                </button>
-                {[...Array(totalPages).keys()].map((number) => (
+              <div className="p-4 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <div className="text-xs text-slate-400 font-medium">
+                  Mostrando <span className="text-slate-700">{indexOfFirstClient + 1}</span> - <span className="text-slate-700">{Math.min(indexOfLastClient, filteredClients.length)}</span> de <span className="text-slate-700">{filteredClients.length}</span>
+                </div>
+
+                <div className="flex items-center gap-1">
                   <button
-                    key={number + 1}
-                    onClick={() => paginate(number + 1)}
-                    className={`px-4 py-2 border border-border rounded-lg ${
-                      currentPage === number + 1
-                        ? "bg-primary text-white"
-                        : "text-lightText bg-card hover:bg-background"
-                    }`}
+                    onClick={() => paginate(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="p-2 rounded-lg hover:bg-white hover:shadow-sm text-slate-500 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:shadow-none transition-all"
                   >
-                    {number + 1}
+                    <ChevronLeft className="h-4 w-4" />
                   </button>
-                ))}
-                <button
-                  onClick={() => paginate(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="px-4 py-2 border border-border rounded-lg text-lightText bg-card hover:bg-background disabled:opacity-50"
-                >
-                  Próximo
-                </button>
+
+                  {[...Array(totalPages).keys()].map((number) => {
+                    const page = number + 1;
+                    // Simple logic to show limited pages could go here, for now showing all as per original
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => paginate(page)}
+                        className={`
+                            w-8 h-8 rounded-lg text-xs font-bold transition-all
+                            ${currentPage === page
+                            ? "bg-slate-900 text-white shadow-md shadow-slate-900/20"
+                            : "text-slate-500 hover:bg-white hover:text-slate-900 hover:shadow-sm"
+                          }
+                          `}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
+
+                  <button
+                    onClick={() => paginate(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="p-2 rounded-lg hover:bg-white hover:shadow-sm text-slate-500 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:shadow-none transition-all"
+                  >
+                    <ChevronRight className="h-4 w-4" />
+                  </button>
+                </div>
               </div>
             )}
           </>

@@ -58,16 +58,20 @@ const NewVaccine = () => {
 
   return (
     <AnimalDetailsLayout>
-      <div className="bg-card shadow-md rounded-lg p-6">
+      <div className="w-full max-w-6xl mx-auto p-4 md:p-8">
+        <div className="mb-6">
+          <h1 className="text-3xl font-bold text-slate-800">Nova Vacinação</h1>
+          <p className="text-slate-500">Registre as vacinas aplicadas no paciente</p>
+        </div>
         <VaccineForm onSubmit={handleSubmit} onCancel={handleCancel} />
-        <Modal
-          show={modalState.show}
-          title={modalState.title}
-          message={modalState.message}
-          type={modalState.type}
-          onClose={handleCloseModal}
-        />
       </div>
+      <Modal
+        show={modalState.show}
+        title={modalState.title}
+        message={modalState.message}
+        type={modalState.type}
+        onClose={handleCloseModal}
+      />
     </AnimalDetailsLayout>
   );
 };

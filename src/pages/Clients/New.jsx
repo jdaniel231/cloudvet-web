@@ -53,11 +53,13 @@ export default function NewClient() {
 
   return (
     <>
-      <div className="container mx-auto p-4">
-        <h1 className="text-3xl font-bold text-text mb-6">Novo Cliente</h1>
-        <div className="bg-card shadow-md rounded-lg p-6">
-          <ClientForm onSubmit={handleSubmit} />
+      <div className="w-full max-w-4xl mx-auto p-6">
+        <div className="flex items-center gap-3 mb-8">
+          <h1 className="text-3xl font-bold text-slate-800">Novo Cliente</h1>
+          <div className="h-px bg-slate-200 flex-1 ml-4" />
         </div>
+
+        <ClientForm onSubmit={handleSubmit} />
       </div>
 
       <Modal
