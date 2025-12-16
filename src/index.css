@@ -4,13 +4,31 @@
 
 body {
   margin: 0;
-  font-family: "Inter", sans-serif; /* Using Inter as a modern, clean font */
+  font-family: "Inter", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: theme(
-    "colors.background"
-  ); /* Use the new background color */
-  color: theme("colors.text"); /* Set default text color */
+  background-color: theme("colors.background");
+  color: theme("colors.text");
+  scroll-behavior: smooth;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: theme("colors.background");
+}
+
+::-webkit-scrollbar-thumb {
+  background: theme("colors.gray.300");
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: theme("colors.primary");
 }
 
 /* Import Google Font - Inter */

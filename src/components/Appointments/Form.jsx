@@ -1,16 +1,27 @@
 import { useState } from "react";
 import Input from "../common/FormFields/Input";
+import {
+  FileText,
+  Activity,
+  Stethoscope,
+  Save,
+  X,
+  CheckCircle2
+} from "lucide-react";
 
-const TabButton = ({ active, onClick, children }) => (
+const TabButton = ({ active, onClick, icon: Icon, children }) => (
   <button
     type="button"
-    className={`px-4 py-2 text-sm font-medium ${
-      active
-        ? "text-primary border-b-2 border-primary"
-        : "text-gray-500 hover:text-gray-700"
-    }`}
     onClick={onClick}
+    className={`
+      flex-1 flex items-center justify-center gap-2 py-3 px-4 text-sm font-semibold rounded-xl transition-all duration-300
+      ${active
+        ? "bg-white text-cyan-600 shadow-md ring-1 ring-slate-100"
+        : "text-slate-500 hover:text-slate-700 hover:bg-slate-50"
+      }
+    `}
   >
+    <Icon className={`h-4 w-4 ${active ? "text-cyan-500" : "text-slate-400"}`} />
     {children}
   </button>
 );
@@ -38,70 +49,107 @@ export default function AppointmentForm({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div className="mb-4 border-b border-gray-200">
-        <nav className="-mb-px flex space-x-8" aria-label="Tabs">
+    <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
+
+      {/* Header Tabs */}
+      <div className="bg-slate-50/50 p-2 border-b border-slate-100">
+        <div className="flex p-1 bg-slate-100/50 rounded-2xl">
           <TabButton
             active={activeTab === "complaint"}
             onClick={() => setActiveTab("complaint")}
+            icon={FileText}
           >
-            Chief Complaint
+            Queixa Principal
           </TabButton>
           <TabButton
             active={activeTab === "history"}
             onClick={() => setActiveTab("history")}
+            icon={Activity}
           >
-            Medical History
+            Histórico Médico
           </TabButton>
           <TabButton
             active={activeTab === "diagnosis"}
             onClick={() => setActiveTab("diagnosis")}
+            icon={Stethoscope}
           >
-            Diagnose
+            Diagnóstico
           </TabButton>
-        </nav>
+        </div>
       </div>
 
-      <div className="mt-4">
+      {/* Content Area */}
+      <div className="p-8 min-h-[300px]">
         {activeTab === "complaint" && (
-          <Input
-            label="Chief Complaint"
-            id="chief_complaint"
-            value={form.chief_complaint}
-            onChange={handleChange("chief_complaint")}
-          />
+          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div className="flex items-center gap-2 mb-2 text-slate-400 uppercase text-xs font-bold tracking-wider">
+              <FileText className="h-4 w-4" />
+              <span>Relato do Proprietário</span>
+            </div>
+            <textarea
+              id="chief_complaint"
+              value={form.chief_complaint}
+              onChange={handleChange("chief_complaint")}
+              placeholder="Descreva a queixa principal detalhadamente..."
+              className="w-full h-64 p-4 bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all text-slate-700 placeholder:text-slate-400 resize-none font-medium leading-relaxed"
+            />
+          </div>
         )}
+
         {activeTab === "history" && (
-          <Input
-            label="Medical History"
-            id="medical_history"
-            value={form.medical_history}
-            onChange={handleChange("medical_history")}
-          />
+          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div className="flex items-center gap-2 mb-2 text-slate-400 uppercase text-xs font-bold tracking-wider">
+              <Activity className="h-4 w-4" />
+              <span>Histórico Clínico</span>
+            </div>
+            <textarea
+              id="medical_history"
+              value={form.medical_history}
+              onChange={handleChange("medical_history")}
+              placeholder="Histórico médico pregresso, alergias, medicações em uso..."
+              className="w-full h-64 p-4 bg-slate-50 border-slate-200 rounded-xl focus:ring-2 focus:ring-cyan-500 focus:border-transparent transition-all text-slate-700 placeholder:text-slate-400 resize-none font-medium leading-relaxed"
+            />
+          </div>
         )}
+
         {activeTab === "diagnosis" && (
-          <Input
-            label="Diagnose"
-            id="suspected_exams"
-            value={form.suspected_exams}
-            onChange={handleChange("suspected_exams")}
-          />
+          <div className="space-y-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div className="flex items-center gap-2 mb-2 text-slate-400 uppercase text-xs font-bold tracking-wider">
+              <Stethoscope className="h-4 w-4" />
+              <span>Hipótese Diagnóstica</span>
+            </div>
+            <Input
+              label="Diagnóstico Suspeito"
+              id="suspected_exams"
+              value={form.suspected_exams}
+              onChange={handleChange("suspected_exams")}
+              placeholder="Ex: Gastroenterite infecciosa..."
+              className="bg-slate-50"
+            />
+            <div className="p-4 bg-amber-50 rounded-xl border border-amber-100 text-amber-800 text-sm">
+              <p className="font-semibold mb-1">Nota:</p>
+              <p>Preencha este campo com a suspeita clínica inicial para orientar os exames complementares.</p>
+            </div>
+          </div>
         )}
       </div>
 
-      <div className="flex justify-end mt-6">
-        <button
-          type="submit"
-          className="bg-primary hover:bg-primary-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-        >
-          {isEditMode ? "Atualizar" : "Cadastrar"}
-        </button>
+      {/* Footer Actions */}
+      <div className="bg-slate-50 p-6 border-t border-slate-100 flex justify-end gap-3">
         <button
           type="button"
           onClick={onCancel}
-          className="ml-2 bg-lightText hover:bg-text text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+          className="flex items-center gap-2 px-6 py-2.5 text-slate-500 font-semibold hover:text-slate-700 hover:bg-slate-200 rounded-xl transition-all"
         >
+          <X className="h-4 w-4" />
           Cancelar
+        </button>
+        <button
+          type="submit"
+          className="flex items-center gap-2 bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 text-white px-8 py-2.5 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 font-bold tracking-wide"
+        >
+          <Save className="h-4 w-4 text-cyan-400" />
+          {isEditMode ? "Salvar Alterações" : "Finalizar Consulta"}
         </button>
       </div>
     </form>

@@ -64,9 +64,16 @@ const AnimalDetails = () => {
           Voltar
         </button>
       </div>
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div>{renderContent()}</div>
-        <ActionButtons onViewChange={setCurrentView} />
+      <div className="flex flex-col lg:flex-row gap-8 items-start">
+        {/* Sidebar Navigation */}
+        <div className="w-full lg:w-64 flex-shrink-0">
+          <ActionButtons onViewChange={setCurrentView} currentView={currentView} layout="vertical" />
+        </div>
+
+        {/* Main Content Area */}
+        <div className="flex-1 w-full bg-white rounded-3xl shadow-premium p-8 border border-slate-100 min-h-[600px]">
+          {renderContent()}
+        </div>
       </div>
       <Modal show={isModalOpen} onClose={() => setIsModalOpen(false)}>
         <WeightsForm

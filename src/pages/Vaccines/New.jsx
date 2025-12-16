@@ -58,16 +58,14 @@ const NewVaccine = () => {
 
   return (
     <AnimalDetailsLayout>
-      <div className="bg-card shadow-md rounded-lg p-6">
-        <VaccineForm onSubmit={handleSubmit} onCancel={handleCancel} />
-        <Modal
-          show={modalState.show}
-          title={modalState.title}
-          message={modalState.message}
-          type={modalState.type}
-          onClose={handleCloseModal}
-        />
-      </div>
+      <VaccineForm onSubmit={handleSubmit} onCancel={handleCancel} />
+      <Modal
+        show={modalState.show}
+        title={modalState.title}
+        message={modalState.message}
+        type={modalState.type}
+        onClose={handleCloseModal}
+      />
     </AnimalDetailsLayout>
   );
 };

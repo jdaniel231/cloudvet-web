@@ -1,18 +1,11 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Link } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faDog, faCat, faPaw } from "@fortawesome/free-solid-svg-icons";
-import { Eye, Pen, Trash } from "lucide-react";
+import { Eye, Pen, Trash, Dog, Cat, PawPrint, Plus } from "lucide-react";
 import { deleteAnimal } from "../../services/animal";
 import Modal from "../common/Modal";
 
-const speciesIcons = {
-  cachorro: faDog,
-  cão: faDog,
-  gato: faCat,
-  default: faPaw,
-};
+
 
 const ClientAnimalList = ({ animals, clientId, onAnimalDeleted }) => {
   const [modalState, setModalState] = useState({
@@ -60,13 +53,16 @@ const ClientAnimalList = ({ animals, clientId, onAnimalDeleted }) => {
 
   if (!animals || animals.length === 0) {
     return (
-      <div className="text-center py-4">
-        <p className="text-lightText mb-4">
+      <div className="flex flex-col items-center justify-center py-12 bg-slate-50 rounded-3xl border border-dashed border-slate-300">
+        <div className="bg-slate-100 p-4 rounded-full mb-4">
+          <PawPrint className="h-8 w-8 text-slate-400" />
+        </div>
+        <p className="text-slate-600 font-medium mb-4">
           Nenhum animal encontrado para este cliente.
         </p>
         <Link
           to={`/clients/${clientId}/animals/new`}
-          className="inline-block bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
+          className="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2.5 px-6 rounded-xl transition duration-300 shadow-lg shadow-cyan-600/20"
         >
           Adicionar Animal
         </Link>
@@ -74,57 +70,71 @@ const ClientAnimalList = ({ animals, clientId, onAnimalDeleted }) => {
     );
   }
 
+  const getIcon = (species) => {
+    switch (species?.toLowerCase()) {
+      case "cachorro": return <Dog className="h-8 w-8 text-white" />;
+      case "gato": return <Cat className="h-8 w-8 text-white" />;
+      default: return <PawPrint className="h-8 w-8 text-white" />;
+    }
+  };
+
   return (
     <>
-      <div className="flex justify-end mb-4">
-        <Link
-          to={`/clients/${clientId}/animals/new`}
-          className="inline-block bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-lg transition duration-300"
-        >
-          Adicionar Animal
-        </Link>
-      </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {animals.map((animal) => (
           <div
             key={animal.id}
-            className="bg-card rounded-lg shadow-md overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg"
+            className="group relative bg-white rounded-3xl shadow-sm hover:shadow-premium transition-all duration-500 overflow-hidden border border-slate-100 hover:border-cyan-100"
           >
-            <div className="p-4 flex flex-col items-center">
-              <div className="w-20 h-20 rounded-full bg-background flex items-center justify-center mb-3 border-2 border-border text-4xl text-primary">
-                <FontAwesomeIcon
-                  icon={
-                    speciesIcons[animal.species?.toLowerCase()] ||
-                    speciesIcons.default
-                  }
-                />
-              </div>
-              <h3 className="text-xl font-semibold text-text mb-1">
-                {animal.name}
-              </h3>
-              <p className="text-sm text-lightText mb-2">
-                {animal.species} {animal.breed ? `- ${animal.breed}` : ""}
-              </p>
-              <div className="flex space-x-2 mt-4">
-                <Link
-                  to={`/clients/${clientId}/animals/${animal.id}`}
-                  className="p-2 rounded-lg bg-primary text-white transition-colors hover:bg-primary/80"
-                >
-                  <Eye className="h-5 w-5" />
-                </Link>
+            {/* Card Header Gradient */}
+            <div className="h-24 bg-gradient-to-r from-slate-100 to-slate-200 group-hover:from-cyan-50 group-hover:to-teal-50 transition-colors duration-500 relative">
+              <div className="absolute top-0 right-0 p-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex gap-2">
                 <Link
                   to={`/clients/${clientId}/animals/${animal.id}/edit`}
-                  className="p-2 rounded-lg bg-secondary text-white transition-colors hover:bg-secondary/80"
+                  className="p-1.5 bg-white/50 backdrop-blur-sm rounded-lg hover:bg-white text-slate-500 hover:text-cyan-600 transition-colors"
                 >
-                  <Pen className="h-5 w-5" />
+                  <Pen className="h-4 w-4" />
                 </Link>
                 <button
-                  onClick={() => handleDelete(animal.id)}
-                  className="p-2 rounded-lg bg-red-500 text-white transition-colors hover:bg-red-600"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleDelete(animal.id);
+                  }}
+                  className="p-1.5 bg-white/50 backdrop-blur-sm rounded-lg hover:bg-white text-slate-500 hover:text-red-500 transition-colors"
                 >
-                  <Trash className="h-5 w-5" />
+                  <Trash className="h-4 w-4" />
                 </button>
               </div>
+            </div>
+
+            {/* Avatar Content */}
+            <div className="px-6 relative -mt-12 flex flex-col items-center">
+              <div className={`w-24 h-24 rounded-full p-1.5 bg-white shadow-xl ${animal.species?.toLowerCase() === 'gato' ? 'shadow-purple-500/10' : 'shadow-cyan-500/10'
+                }`}>
+                <div className={`w-full h-full rounded-full flex items-center justify-center bg-gradient-to-br ${animal.species?.toLowerCase() === 'gato'
+                  ? 'from-purple-500 to-indigo-500'
+                  : 'from-cyan-500 to-teal-500'
+                  }`}>
+                  {getIcon(animal.species)}
+                </div>
+              </div>
+
+              <div className="text-center mt-4 mb-6">
+                <h3 className="text-lg font-bold text-slate-800 group-hover:text-cyan-700 transition-colors">
+                  {animal.name}
+                </h3>
+                <p className="text-sm font-medium text-slate-500 bg-slate-100 px-3 py-1 rounded-full inline-block mt-2">
+                  {animal.species} {animal.breed ? `• ${animal.breed}` : ""}
+                </p>
+              </div>
+
+              <Link
+                to={`/clients/${clientId}/animals/${animal.id}`}
+                className="w-full flex items-center justify-center gap-2 py-3 px-4 bg-slate-50 hover:bg-cyan-50 text-slate-600 hover:text-cyan-700 font-semibold rounded-xl transition-colors text-sm mb-6 group-hover:shadow-inner"
+              >
+                <Eye className="h-4 w-4" />
+                Ver Detalhes
+              </Link>
             </div>
           </div>
         ))}
