@@ -5,7 +5,36 @@ import Input from "../common/FormFields/Input";
 import Select from "../common/FormFields/Select";
 import Checkbox from "../common/FormFields/Checkbox";
 import { formatDateToBR, formatDateToISO } from "../../utils/dateUtils";
-import { Syringe, Save, X, Calendar, User, FlaskConical, Stethoscope, Clock } from "lucide-react";
+import {
+  Syringe,
+  Save,
+  X,
+  Calendar,
+  User,
+  FlaskConical,
+  Stethoscope,
+  Clock,
+  CheckCircle,
+  FileText
+} from "lucide-react";
+
+// TabButton Component matching AppointmentForm
+const TabButton = ({ active, onClick, icon: Icon, children }) => (
+  <button
+    type="button"
+    onClick={onClick}
+    className={`
+      flex-1 flex items-center justify-center gap-2 py-3 px-4 text-sm font-semibold rounded-xl transition-all duration-300
+      ${active
+        ? "bg-white text-cyan-600 shadow-md ring-1 ring-slate-100"
+        : "text-slate-500 hover:text-slate-700 hover:bg-slate-50"
+      }
+    `}
+  >
+    <Icon className={`h-4 w-4 ${active ? "text-cyan-500" : "text-slate-400"}`} />
+    {children}
+  </button>
+);
 
 export const VaccineForm = ({
   initialData = {},
@@ -124,153 +153,166 @@ export const VaccineForm = ({
   ];
 
   return (
-    <div className="bg-white rounded-3xl shadow-premium overflow-hidden border border-slate-100 w-full mx-auto">
+    <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden w-full mx-auto">
       {/* Header */}
-      <div className="bg-gradient-to-r from-cyan-600 to-cyan-800 p-6 flex items-center justify-between relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -mr-16 -mt-16"></div>
-        <div className="flex items-center relative z-10">
-          <div className="bg-white/20 p-3 rounded-xl backdrop-blur-md border border-white/20 mr-4">
-            <Syringe className="h-6 w-6 text-white" />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-white tracking-wide">
-              {isEditMode ? "Editar Vacinação" : "Nova Vacinação"}
-            </h2>
-            <p className="text-cyan-100 text-sm font-medium">Preencha os dados da aplicação</p>
-          </div>
+      <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
+        <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
+          <Syringe className="h-5 w-5" />
+        </div>
+        <div>
+          <h3 className="font-bold text-slate-700">
+            {isEditMode ? "Editar Vacinação" : "Nova Vacinação"}
+          </h3>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="p-8">
-        {/* Vaccine Types Section */}
-        <div className="mb-8 bg-slate-50 p-6 rounded-2xl border border-slate-200">
-          <div className="flex items-center mb-4">
-            <FlaskConical className="h-5 w-5 text-cyan-600 mr-2" />
-            <label className="text-slate-800 text-sm font-bold tracking-wide uppercase">
-              Tipo de Vacina
-            </label>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
-            {vaccineTypes.map((type) => (
-              <Checkbox
-                key={type.id}
-                id={`vaccine-${type.id}`}
-                value={type.id}
-                onChange={handleCheckboxChange}
-                checked={form.vaccineTypeId.includes(type.id)}
-                label={type.name}
-              />
-            ))}
-          </div>
-          {form.vaccineTypeId.length === 0 && (
-            <p className="text-xs text-amber-600 mt-2 font-medium bg-amber-50 inline-block px-2 py-1 rounded">
-              Selecione pelo menos uma vacina.
-            </p>
-          )}
-        </div>
+      <form onSubmit={handleSubmit}>
+        <div className="p-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
 
-        {/* Main Form Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="space-y-6">
-            <div className="relative">
-              <Input
-                label="Data de Aplicação"
-                id="applicationDate"
-                placeholder="DD/MM/AAAA"
-                value={formatDateToBR(form.applicationDate)}
-                onChange={handleApplicationDateChange}
-                required
-              />
-              <div className="absolute right-3 top-9 text-slate-400 pointer-events-none">
-                <Calendar className="h-5 w-5" />
+            {/* Left Column: Vaccine Selection */}
+            <div className="lg:col-span-4 space-y-6">
+              <div className="flex items-center gap-2 mb-2 text-slate-400 uppercase text-xs font-bold tracking-wider">
+                <FlaskConical className="h-4 w-4" />
+                <span>Vacinas Disponíveis</span>
+              </div>
+
+              <div className="bg-slate-50 p-6 rounded-2xl border border-slate-200/60">
+                <div className="flex flex-col gap-3">
+                  {vaccineTypes.map((type) => (
+                    <div key={type.id} className="relative">
+                      <Checkbox
+                        id={`vaccine-${type.id}`}
+                        value={type.id}
+                        onChange={handleCheckboxChange}
+                        checked={form.vaccineTypeId.includes(type.id)}
+                        label={type.name}
+                      />
+                    </div>
+                  ))}
+                </div>
+                {form.vaccineTypeId.length === 0 && (
+                  <p className="flex items-center gap-2 text-xs text-amber-600 mt-4 font-medium bg-amber-50 px-3 py-2 rounded-lg border border-amber-100 inline-block">
+                    <CheckCircle className="h-3 w-3" />
+                    Selecione pelo menos uma vacina.
+                  </p>
+                )}
               </div>
             </div>
 
-            <Select
-              label="Dose Aplicada"
-              id="appliedDose"
-              value={form.appliedDose}
-              onChange={handleChange("appliedDose")}
-              required
-            >
-              <option value="">Selecione a dose</option>
-              {doseOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </Select>
+            {/* Right Column: Application Details */}
+            <div className="lg:col-span-8 space-y-6">
+              <div className="flex items-center gap-2 mb-2 text-slate-400 uppercase text-xs font-bold tracking-wider">
+                <FileText className="h-4 w-4" />
+                <span>Detalhes da Aplicação</span>
+              </div>
 
-            <Select
-              label="Veterinário Responsável"
-              id="user"
-              value={form.userId}
-              onChange={handleChange("userId")}
-              required
-            >
-              <option value="">Selecione o veterinário</option>
-              {users.map((user) => (
-                <option key={user.id} value={user.id}>
-                  {user.name}
-                </option>
-              ))}
-            </Select>
-          </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-6">
+                  <div className="relative">
+                    <Input
+                      label="Data de Aplicação"
+                      id="applicationDate"
+                      placeholder="DD/MM/AAAA"
+                      value={formatDateToBR(form.applicationDate)}
+                      onChange={handleApplicationDateChange}
+                      required
+                    />
+                    <div className="absolute right-3 top-9 text-slate-400 pointer-events-none">
+                      <Calendar className="h-5 w-5" />
+                    </div>
+                  </div>
 
-          <div className="space-y-6">
-            <Select
-              label="Previsão de Retorno"
-              id="returnInterval"
-              value={form.returnInterval}
-              onChange={(e) => handleDateCalculation(e.target.value)}
-            >
-              <option value="">Selecione o intervalo</option>
-              {returnOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </Select>
+                  <Select
+                    label="Dose Aplicada"
+                    id="appliedDose"
+                    value={form.appliedDose}
+                    onChange={handleChange("appliedDose")}
+                    required
+                  >
+                    <option value="">Selecione a dose</option>
+                    {doseOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </Select>
 
-            <div className="relative">
-              <Input
-                label="Data de Retorno Calculada"
-                id="returnDate"
-                placeholder="--"
-                value={formatDateToBR(form.returnDate)}
-                readOnly
-                className="bg-slate-100"
-              />
-              <div className="absolute right-3 top-9 text-slate-400 pointer-events-none">
-                <Clock className="h-5 w-5" />
+                  <Select
+                    label="Veterinário Responsável"
+                    id="user"
+                    value={form.userId}
+                    onChange={handleChange("userId")}
+                    required
+                  >
+                    <option value="">Selecione o veterinário</option>
+                    {users.map((user) => (
+                      <option key={user.id} value={user.id}>
+                        {user.name}
+                      </option>
+                    ))}
+                  </Select>
+                </div>
+
+                <div className="space-y-6">
+                  <Select
+                    label="Previsão de Retorno"
+                    id="returnInterval"
+                    value={form.returnInterval}
+                    onChange={(e) => handleDateCalculation(e.target.value)}
+                  >
+                    <option value="">Selecione o intervalo</option>
+                    {returnOptions.map((option) => (
+                      <option key={option} value={option}>
+                        {option}
+                      </option>
+                    ))}
+                  </Select>
+
+                  <div className="relative">
+                    <Input
+                      label="Data de Retorno Calculada"
+                      id="returnDate"
+                      placeholder="--"
+                      value={formatDateToBR(form.returnDate)}
+                      readOnly
+                      className="bg-slate-100 font-semibold text-slate-600"
+                    />
+                    <div className="absolute right-3 top-9 text-slate-400 pointer-events-none">
+                      <Clock className="h-5 w-5" />
+                    </div>
+                  </div>
+
+                  <Input
+                    label="Observações Clínicas"
+                    id="obs"
+                    value={form.obs}
+                    onChange={handleChange("obs")}
+                    placeholder="Alguma reação ou detalhe importante?"
+                    icon={Stethoscope}
+                  />
+                </div>
               </div>
             </div>
-
-            <Input
-              label="Observações Clínicas"
-              id="obs"
-              value={form.obs}
-              onChange={handleChange("obs")}
-              placeholder="Alguma reação ou detalhe importante?"
-            />
           </div>
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-end mt-10 pt-6 border-t border-slate-100 space-x-3">
+        <div className="bg-slate-50 p-6 border-t border-slate-100 flex justify-end gap-3">
           <button
             type="button"
             onClick={onCancel}
-            className="flex items-center px-6 py-3 rounded-xl text-slate-500 font-semibold hover:bg-slate-50 hover:text-slate-700 transition-all duration-300"
+            className="flex items-center gap-2 px-6 py-2.5 text-slate-500 font-semibold hover:text-slate-700 hover:bg-slate-200 rounded-xl transition-all"
           >
-            <X className="h-5 w-5 mr-2" />
+            <X className="h-4 w-4" />
             Cancelar
           </button>
+
           <button
             type="submit"
-            className="flex items-center px-8 py-3 rounded-xl bg-gradient-to-r from-cyan-600 to-cyan-700 text-white font-bold shadow-lg shadow-cyan-500/30 hover:shadow-cyan-500/40 hover:-translate-y-0.5 transition-all duration-300"
+            className="flex items-center gap-2 bg-gradient-to-r from-slate-900 to-slate-800 hover:from-slate-800 hover:to-slate-700 text-white px-8 py-2.5 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 font-bold tracking-wide"
           >
-            <Save className="h-5 w-5 mr-2" />
+            <Save className="h-4 w-4 text-emerald-400" />
             {isEditMode ? "Salvar Alterações" : "Registrar Vacina"}
           </button>
         </div>
