@@ -24,10 +24,13 @@ import Index from "./pages/VaccineType/Index";
 import NewVaccinceType from "./pages/VaccineType/New";
 import EditVaccineType from "./pages/VaccineType/Edit";
 import NewVaccine from "./pages/Vaccines/New";
+import ClinicServicesIndex from "./pages/ClinicServices/Index";
+import NewClinicService from "./pages/ClinicServices/New";
+import EditClinicaService from "./pages/ClinicServices/Edit";
 
 function App() {
   return (
-    <Router>
+    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <Routes>
         <Route path="/login" element={<Login />} />
 
@@ -37,6 +40,9 @@ function App() {
           <Route path="/vaccine_types" element={<Index />} />
           <Route path="/vaccine_types/new" element={<NewVaccinceType />} />
           <Route path="/vaccine_types/:id/edit" element={<EditVaccineType />} />
+          <Route path="/clinic_services" element={<ClinicServicesIndex />} />
+          <Route path="/clinic_services/new" element={<NewClinicService />} />
+          <Route path="/clinic_services/:id/edit" element={<EditClinicaService />} />
 
           {/* Rotas de Clientes e Animais e Vacinas */}
           <Route path="/clients" element={<ClientsPage />} />

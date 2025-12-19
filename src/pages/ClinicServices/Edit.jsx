@@ -1,30 +1,29 @@
 import { useEffect, useState } from "react";
-import {
-  getVaccineTypeById,
-  updateVaccineType,
-} from "../../services/vaccineType";
-import { useNavigate, useParams } from "react-router-dom";
-import VaccineTypeForm from "../../components/VaccineTypes/Form";
+import ClinicServiceForm from "../../components/ClinicServices/Form";
 import Modal from "../../components/common/Modal";
+import { getClinicServiceById, updateClinicService } from "../../services/clinicService";
+import { useNavigate, useParams } from "react-router-dom";
 
 export default function Edit() {
+
   const { id } = useParams();
-  const [vaccineType, setVaccineType] = useState(null);
+  const [clinicService, setClinicService] = useState(null);
   const [modalState, setModalState] = useState({
     show: false,
     title: "",
     message: "",
-    type: "success",
+    type: "success", // 'success' ou 'error'
   });
+
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const vaccineTypeData = await getVaccineTypeById(id);
-        setVaccineType(vaccineTypeData);
-      } catch (err) {
-        console.error(err);
+        const clinicServiceData = await getClinicServiceById(id);
+        setClinicService(clinicServiceData);
+      } catch (error) {
+        console.error("Erro ao buscar serviço da clínica:", error);
       }
     };
 
@@ -33,36 +32,34 @@ export default function Edit() {
     }
   }, [id]);
 
-  // Auto-close modal de sucesso após 3 segundos
   useEffect(() => {
     if (modalState.show && modalState.type === "success") {
       const timer = setTimeout(() => {
         setModalState({ ...modalState, show: false });
-        navigate("/vaccine_types");
+        navigate("/clinic_services");
       }, 3000); // 3 segundos
 
       return () => clearTimeout(timer); // Cleanup
     }
   }, [modalState.show, modalState.type, navigate]);
 
-  const handleSubmit = async (vaccineTypeData) => {
+  const handleSubmit = async (formData) => {
     try {
-      await updateVaccineType(id, vaccineTypeData);
-      console.log("Tipo de vacina atualizado com sucesso!");
+      await updateClinicService(id, formData);
       setModalState({
         show: true,
         title: "Atualização Realizada!",
-        message: `Tipo de vacina ${vaccineTypeData.name} atualizado com sucesso!`,
+        message: `Serviço da clínica ${formData.name || clinicService?.name || ''} atualizado com sucesso!`,
         type: "success",
       });
     } catch (error) {
-      console.error("Erro ao atualizar tipo de vacina:", error);
+      console.error("Erro ao atualizar serviço da clínica:", error);
       setModalState({
         show: true,
-        title: "Erro no Atualizar!",
+        title: "Erro no Atualização!",
         message:
           error.response?.data?.error ||
-          "Ocorreu um erro ao atualizar o tipo de vacina. Tente novamente.",
+          "Ocorreu um erro ao atualizar o serviço da clínica. Tente novamente.",
         type: "error",
       });
     }
@@ -71,26 +68,28 @@ export default function Edit() {
   const handleCloseModal = () => {
     setModalState({ ...modalState, show: false });
     if (modalState.type === "success") {
-      navigate("/vaccine_types");
+      navigate("/clinic_services");
     }
   };
 
   const handleCancel = () => {
-    navigate("/vaccine_types");
+    navigate("/clinic_services");
   };
+
 
   return (
     <>
       <div className="w-full max-w-4xl mx-auto p-4 md:p-8 flex justify-center">
-        {vaccineType && (
-          <VaccineTypeForm
-            initialData={vaccineType}
+        {clinicService ? (
+          <ClinicServiceForm
+            initialData={clinicService}
             onSubmit={handleSubmit}
             onCancel={handleCancel}
           />
+        ) : (
+          <div className="text-slate-500 font-medium">Carregando...</div>
         )}
       </div>
-
       <Modal
         show={modalState.show}
         onClose={handleCloseModal}
@@ -99,5 +98,5 @@ export default function Edit() {
         type={modalState.type}
       />
     </>
-  );
+  )
 }

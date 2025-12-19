@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
+import { createClinicService } from "../../services/clinicService";
 import { useNavigate } from "react-router-dom";
-import { createVaccineType } from "../../services/vaccineType";
-import VaccineTypeForm from "../../components/VaccineTypes/Form";
+import ClinicServiceForm from "../../components/ClinicServices/Form";
 import Modal from "../../components/common/Modal";
 
 export default function New() {
@@ -19,7 +19,7 @@ export default function New() {
     if (modalState.show && modalState.type === "success") {
       const timer = setTimeout(() => {
         setModalState({ ...modalState, show: false });
-        navigate("/vaccine_types");
+        navigate("/clinic_services");
       }, 3000); // 3 segundos
 
       return () => clearTimeout(timer); // Cleanup
@@ -28,21 +28,21 @@ export default function New() {
 
   const handleSubmit = async (formData) => {
     try {
-      await createVaccineType(formData);
+      await createClinicService(formData);
       setModalState({
         show: true,
         title: "Cadastro Realizado!",
-        message: `Tipo de vacina cadastrado com sucesso!`, // Mensagem dinâmica
+        message: `Serviço de clínica cadastrado com sucesso!`, // Mensagem dinâmica
         type: "success",
       });
     } catch (error) {
-      console.error("Erro ao criar tipo de vacina:", error);
+      console.error("Erro ao criar serviço de clínica:", error);
       setModalState({
         show: true,
         title: "Erro no Cadastro!",
         message:
           error.response?.data?.error ||
-          "Ocorreu um erro ao cadastrar o tipo de vacina. Tente novamente.",
+          "Ocorreu um erro ao cadastrar o serviço de clínica. Tente novamente.",
         type: "error",
       });
     }
@@ -51,17 +51,16 @@ export default function New() {
   const handleCloseModal = () => {
     setModalState({ ...modalState, show: false });
     if (modalState.type === "success") {
-      navigate("/vaccine_types");
+      navigate("/clinic_services");
     }
   };
 
   const handleCancel = () => {
-    navigate("/vaccine_types");
+    navigate("/clinic_services");
   };
-
   return (
     <div className="w-full max-w-4xl mx-auto p-4 md:p-8 flex justify-center">
-      <VaccineTypeForm onSubmit={handleSubmit} onCancel={handleCancel} />
+      <ClinicServiceForm onSubmit={handleSubmit} onCancel={handleCancel} />
       <Modal
         show={modalState.show}
         onClose={handleCloseModal}
