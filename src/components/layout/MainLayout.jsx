@@ -22,6 +22,7 @@ import {
   ChevronRight,
   Syringe,
   FilePlus,
+  LucideHospital,
 } from "lucide-react";
 import Breadcrumbs from "../common/Breadcrumbs";
 
@@ -256,6 +257,11 @@ export default function MainLayout({ children }) {
           path: "/vaccine_types",
           icon: <Syringe className="h-4 w-4" />,
         },
+        {
+          name: "Serviços de Clínica",
+          path: "/clinic_services",
+          icon: <LucideHospital className="h-4 w-4" />,
+        }
       ],
     },
     {
