@@ -28,7 +28,7 @@ export default function ClinicServiceForm({ initialData = {}, onSubmit, onCancel
   const isEditMode = !!data.id;
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden w-full max-w-2xl mx-auto">
+    <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden w-full mx-auto">
       {/* Header */}
       <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
         <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg">

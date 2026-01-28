@@ -11,8 +11,9 @@ const Breadcrumbs = ({ nameMap = {} }) => {
     dashboard: "Visão Geral",
     appointments: "Agendamentos",
     clients: "Pacientes",
+    vaccine_types: "Tipos de Vacinas",
     settings: "Configurações",
-    new: "Novo Cadastro",
+    new: "Novo",
     edit: "Editar",
   };
 

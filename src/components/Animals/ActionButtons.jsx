@@ -1,5 +1,5 @@
 import React from "react";
-import { Stethoscope, Weight, Syringe, FileText, Pill, CalendarClock, Activity } from "lucide-react";
+import { Stethoscope, Weight, Syringe, FileText, Pill, Activity, Ticket } from "lucide-react";
 
 const ActionButtons = ({ onViewChange, currentView, layout = "grid" }) => {
   const actions = [
@@ -44,9 +44,9 @@ const ActionButtons = ({ onViewChange, currentView, layout = "grid" }) => {
       shadow: "shadow-sky-500/30",
     },
     {
-      label: "Agendar",
-      view: "scheduleReturn",
-      icon: CalendarClock,
+      label: "Ticket",
+      view: "tickets",
+      icon: Ticket,
       bg: "bg-indigo-600",
       gradient: "from-indigo-500 to-indigo-700",
       shadow: "shadow-indigo-500/30",
@@ -66,8 +66,8 @@ const ActionButtons = ({ onViewChange, currentView, layout = "grid" }) => {
               key={idx}
               onClick={() => onViewChange(action.view)}
               className={`group flex items-center gap-3 w-full p-3 rounded-xl transition-all duration-300 text-left ${currentView === action.view
-                  ? "bg-cyan-50 text-cyan-700 shadow-sm ring-1 ring-cyan-100"
-                  : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                ? "bg-cyan-50 text-cyan-700 shadow-sm ring-1 ring-cyan-100"
+                : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
                 }`}
             >
               <div

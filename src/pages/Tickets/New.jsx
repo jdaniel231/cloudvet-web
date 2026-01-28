@@ -1,47 +1,43 @@
 import { useNavigate, useParams } from "react-router-dom";
-import { createVaccine } from "../../services/vaccine";
+import { createTicket } from "../../services/ticket";
 import AnimalDetailsLayout from "../../components/Animals/AnimalDetailsLayout";
 import Modal from "../../components/common/Modal";
-import { VaccineForm } from "../../components/Vaccines/Form";
+import { TicketForm } from "../../components/Tickets/Form";
 import { useState } from "react";
+import { Ticket } from "lucide-react";
 
-const NewVaccine = () => {
+const NewTicket = () => {
   const { clientId, animalId } = useParams();
+  const [loading, setLoading] = useState(false);
   const [modalState, setModalState] = useState({
     show: false,
     title: "",
     message: "",
-    type: "success", // 'success' ou 'error'
+    type: "success",
   });
 
   const navigate = useNavigate();
 
   const handleSubmit = async (formData) => {
     try {
-      if (!formData.vaccine_type_id || formData.vaccine_type_id.length === 0) {
-        setModalState({
-          show: true,
-          title: "Nenhuma vacina selecionada",
-          message: "Por favor, selecione pelo menos um tipo de vacina.",
-          type: "error",
-        });
-        return;
-      }
+      setLoading(true);
+      await createTicket(animalId, formData);
 
-      await createVaccine(animalId, formData, clientId);
       setModalState({
         show: true,
-        title: "Vacina Cadastrada",
-        message: "As vacinas foram cadastradas com sucesso",
+        title: "Ticket Aberto!",
+        message: "Sua solicitação foi registrada com sucesso e já está na nossa fila de atendimento.",
         type: "success",
       });
     } catch (error) {
       setModalState({
         show: true,
-        title: "Erro ao cadastrar a vacina",
-        message: error.message,
+        title: "Erro ao abrir ticket",
+        message: error.message || "Ocorreu um erro interno. Tente novamente mais tarde.",
         type: "error",
       });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -60,11 +56,12 @@ const NewVaccine = () => {
     <AnimalDetailsLayout>
       <div className="w-full mx-auto p-4 md:p-8">
         <div className="mb-6">
-          <h1 className="text-3xl font-bold text-slate-800">Nova Vacinação</h1>
-          <p className="text-slate-500">Registre as vacinas aplicadas no paciente</p>
+          <h1 className="text-3xl font-bold text-slate-800">Novo Ticket de Suporte</h1>
+          <p className="text-slate-500">Preencha os detalhes abaixo para iniciar um novo atendimento para este animal.</p>
         </div>
-        <VaccineForm onSubmit={handleSubmit} onCancel={handleCancel} />
+        <TicketForm onSubmit={handleSubmit} onCancel={handleCancel} isLoading={loading} />
       </div>
+
       <Modal
         show={modalState.show}
         title={modalState.title}
@@ -76,4 +73,4 @@ const NewVaccine = () => {
   );
 };
 
-export default NewVaccine;
+export default NewTicket;

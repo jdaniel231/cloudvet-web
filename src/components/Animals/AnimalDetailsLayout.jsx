@@ -27,11 +27,15 @@ const AnimalDetailsLayout = ({ children }) => {
   }
 
   return (
-    <div className="w-full p-6 max-w-[1920px] mx-auto">
+    <div className="w-full p-6 mx-auto">
       <AnimalHeader client={client} animal={animal} />
-      {React.Children.map(children, (child) =>
-        React.cloneElement(child, { animal, client, clientId, animalId }),
-      )}
+      {React.Children.map(children, (child) => {
+        // Se o filho for um componente (não uma string como 'div'), injetamos as props
+        if (typeof child.type !== "string") {
+          return React.cloneElement(child, { animal, client, clientId, animalId });
+        }
+        return child;
+      })}
     </div>
   );
 };

@@ -1,37 +1,40 @@
 import { api } from "./api";
 import { handleApiCall } from "./apiUtils";
 
-export const getVaccines = async (clientId, animalId) => {
+export const getVaccinesByAnimal = async (animalId) => {
   return handleApiCall(
-    () => api.get(`/clients/${clientId}/animals/${animalId}/vaccines`),
+    () => api.get(`/animals/${animalId}/vaccines`),
     "Erro ao buscar vacinas:"
   );
 };
 
-export const createVaccine = async (clientId, animalId, vaccine) => {
+export const createVaccine = async (animalId, vaccine, clientId = null) => {
+  const payload = { ...vaccine };
+  if (clientId) payload.client_id = clientId;
+
   return handleApiCall(
-    () => api.post(`/clients/${clientId}/animals/${animalId}/vaccines`, { vaccine }),
+    () => api.post(`/animals/${animalId}/vaccines`, { vaccine: payload }),
     "Erro ao criar vacina:"
   );
 };
 
-export const updateVaccine = async (clientId, animalId, vaccineId, vaccine) => {
+export const updateVaccine = async (vaccineId, vaccine) => {
   return handleApiCall(
-    () => api.put(`/clients/${clientId}/animals/${animalId}/vaccines/${vaccineId}`, { vaccine }),
+    () => api.put(`/vaccines/${vaccineId}`, { vaccine }),
     "Erro ao atualizar vacina:"
   );
 };
 
-export const deleteVaccine = async (clientId, animalId, vaccineId) => {
+export const deleteVaccine = async (vaccineId) => {
   return handleApiCall(
-    () => api.delete(`/clients/${clientId}/animals/${animalId}/vaccines/${vaccineId}`),
+    () => api.delete(`/vaccines/${vaccineId}`),
     "Erro ao excluir vacina:"
   );
 };
 
-export const getVaccineById = async (clientId, animalId, vaccineId) => {
+export const getVaccineById = async (vaccineId) => {
   return handleApiCall(
-    () => api.get(`/clients/${clientId}/animals/${animalId}/vaccines/${vaccineId}`),
-    "Erro ao buscar vacina com ID:"
+    () => api.get(`/vaccines/${vaccineId}`),
+    "Erro ao buscar vacina:"
   );
 };

@@ -11,6 +11,7 @@ import {
   AlertCircle
 } from "lucide-react";
 import Modal from "../../components/common/Modal";
+import DataTable from "../../components/common/DataTable";
 
 export default function Index() {
   const [vaccineTypes, setVaccineTypes] = useState([]);
@@ -115,8 +116,51 @@ export default function Index() {
     type.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const columns = [
+    {
+      header: "Item",
+      key: "id",
+      headerClassName: "w-20",
+      render: (type) => (
+        <div className="bg-cyan-50 p-2.5 rounded-xl w-fit group-hover:bg-cyan-100 group-hover:scale-110 transition-all duration-300">
+          <Syringe className="h-5 w-5 text-cyan-600" />
+        </div>
+      ),
+    },
+    {
+      header: "Nome da Vacina",
+      key: "name",
+      render: (type) => (
+        <p className="font-bold text-slate-700 text-lg">{type.name}</p>
+      ),
+    },
+    {
+      header: "Gerenciar",
+      align: "right",
+      render: (type) => (
+        <div className="flex justify-end items-center gap-3">
+          <Link
+            to={`/vaccine_types/${type.id}/edit`}
+            className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200 group/edit"
+            title="Editar"
+          >
+            <Pen className="h-5 w-5 group-hover/edit:scale-110 transition-transform" />
+          </Link>
+
+          <button
+            onClick={() => handleDelete(type)}
+            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all duration-200 group/delete"
+            title="Excluir"
+          >
+            <Trash2 className="h-5 w-5 group-hover/delete:scale-110 transition-transform" />
+          </button>
+        </div>
+      ),
+    },
+  ];
+
   return (
-    <div className="w-full max-w-7xl mx-auto p-4 md:p-8 space-y-8 min-h-screen bg-slate-50/50">
+    <div className="w-full mx-auto p-4 md:p-8 space-y-8 min-h-screen bg-slate-50/50">
 
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -164,87 +208,15 @@ export default function Index() {
           </div>
         </div>
 
-        {/* Table Content */}
-        <div className="relative min-h-[400px]">
-          {loading ? (
-            <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-10">
-              <div className="flex flex-col items-center gap-3">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-cyan-600"></div>
-                <p className="text-slate-500 font-medium animate-pulse">Carregando dados...</p>
-              </div>
-            </div>
-          ) : errorMsg ? (
-            <div className="flex flex-col items-center justify-center h-64 text-red-500 bg-red-50/50 m-4 rounded-2xl border border-red-100">
-              <AlertCircle className="h-10 w-10 mb-3" />
-              <p className="font-semibold">{errorMsg}</p>
-            </div>
-          ) : filteredTypes.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-96 text-slate-400">
-              <div className="bg-slate-50 p-6 rounded-full mb-4">
-                <Syringe className="h-12 w-12 text-slate-300" />
-              </div>
-              <p className="text-lg font-medium text-slate-600">Nenhum registro encontrado</p>
-              <p className="text-sm text-slate-400 mt-1">
-                {searchTerm ? "Tente buscar por outro termo" : "Comece adicionando um novo tipo de vacina"}
-              </p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-slate-50/50 border-b border-slate-100">
-                    <th className="py-5 px-8 text-left text-xs font-bold text-slate-400 uppercase tracking-wider w-20">
-                      Item
-                    </th>
-                    <th className="py-5 px-6 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">
-                      Nome da Vacina
-                    </th>
-                    <th className="py-5 px-6 text-right text-xs font-bold text-slate-400 uppercase tracking-wider">
-                      Gerenciar
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {filteredTypes.map((type) => (
-                    <tr
-                      key={type.id}
-                      className="group hover:bg-slate-50/80 transition-colors duration-200"
-                    >
-                      <td className="py-4 px-8">
-                        <div className="bg-cyan-50 p-2.5 rounded-xl w-fit group-hover:bg-cyan-100 group-hover:scale-110 transition-all duration-300">
-                          <Syringe className="h-5 w-5 text-cyan-600" />
-                        </div>
-                      </td>
-                      <td className="py-4 px-6">
-                        <p className="font-bold text-slate-700 text-lg">{type.name}</p>
-                        {/* If we had description, it would go here */}
-                      </td>
-                      <td className="py-4 px-6">
-                        <div className="flex justify-end items-center gap-3">
-                          <Link
-                            to={`/vaccine_types/${type.id}/edit`}
-                            className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200 group/edit"
-                            title="Editar"
-                          >
-                            <Pen className="h-5 w-5 group-hover/edit:scale-110 transition-transform" />
-                          </Link>
-
-                          <button
-                            onClick={() => handleDelete(type)}
-                            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all duration-200 group/delete"
-                            title="Excluir"
-                          >
-                            <Trash2 className="h-5 w-5 group-hover/delete:scale-110 transition-transform" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+        <DataTable
+          columns={columns}
+          data={filteredTypes}
+          loading={loading}
+          errorMsg={errorMsg}
+          searchTerm={searchTerm}
+          emptyMessage="Nenhum tipo de vacina encontrado"
+          emptyIcon={FlaskConical}
+        />
       </div>
 
       {/* Modal de feedback */}

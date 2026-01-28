@@ -12,7 +12,7 @@ const useAnimalDetails = (clientId, animalId) => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const animalData = await getAnimalById(clientId, animalId);
+        const animalData = await getAnimalById(animalId);
         setAnimal(animalData);
         const clientData = await getClientById(clientId);
         setClient(clientData);

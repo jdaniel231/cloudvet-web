@@ -17,7 +17,7 @@ const NewAppointment = () => {
 
   const handleSubmit = async (formData) => {
     try {
-      await createAppointment(clientId, animalId, formData);
+      await createAppointment(animalId, formData, clientId);
       setModalState({
         show: true,
         title: "Cadastro Realizado!",

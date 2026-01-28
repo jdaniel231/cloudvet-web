@@ -18,7 +18,7 @@ const EditAnimal = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const animalData = await getAnimalById(clientId, animalId);
+        const animalData = await getAnimalById(animalId);
         setAnimal(animalData);
       } catch (err) {
         console.error(err);
@@ -32,7 +32,7 @@ const EditAnimal = () => {
 
   const handleSubmit = async (animalData) => {
     try {
-      await updateAnimal(clientId, animalId, animalData);
+      await updateAnimal(animalId, animalData);
       console.log("Animal atualizado com sucesso!");
       setModalState({
         show: true,

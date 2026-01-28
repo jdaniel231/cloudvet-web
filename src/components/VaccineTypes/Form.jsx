@@ -6,6 +6,7 @@ export default function VaccineTypeForm({
   initialData = {},
   onSubmit,
   onCancel,
+  loading = false,
 }) {
   const [form, setForm] = useState({
     name: initialData.name || "",
@@ -17,13 +18,14 @@ export default function VaccineTypeForm({
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (loading) return;
     onSubmit(form);
   };
 
   const isEditMode = !!initialData.id;
 
   return (
-    <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden w-full max-w-2xl mx-auto">
+    <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden w-full mx-auto">
       {/* Header */}
       <div className="px-6 py-4 border-b border-slate-100 bg-slate-50/50 flex items-center gap-3">
         <div className="p-2 bg-indigo-100 text-indigo-600 rounded-lg">
@@ -47,6 +49,7 @@ export default function VaccineTypeForm({
             placeholder="Ex: V10, Raiva, Gripe..."
             value={form.name}
             onChange={handleChange("name")}
+            disabled={loading}
           />
         </div>
 
@@ -54,17 +57,19 @@ export default function VaccineTypeForm({
           <button
             type="button"
             onClick={onCancel}
-            className="flex items-center gap-2 px-6 py-2.5 text-slate-500 font-semibold hover:text-slate-700 hover:bg-slate-200 rounded-xl transition-all"
+            disabled={loading}
+            className="flex items-center gap-2 px-6 py-2.5 text-slate-500 font-semibold hover:text-slate-700 hover:bg-slate-200 rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <X className="h-4 w-4" />
             Cancelar
           </button>
           <button
             type="submit"
-            className="flex items-center gap-2 bg-gradient-to-r from-slate-900 to-slate-800 hover:from-slate-800 hover:to-slate-700 text-white px-8 py-2.5 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 font-bold tracking-wide"
+            disabled={loading}
+            className="flex items-center gap-2 bg-gradient-to-r from-slate-900 to-slate-800 hover:from-slate-800 hover:to-slate-700 text-white px-8 py-2.5 rounded-xl transition-all duration-300 shadow-lg hover:shadow-xl hover:-translate-y-0.5 font-bold tracking-wide disabled:opacity-70 disabled:cursor-not-allowed disabled:transform-none"
           >
-            <Save className="h-4 w-4 text-emerald-400" />
-            Salvar
+            <Save className={`h-4 w-4 text-emerald-400 ${loading ? 'animate-spin' : ''}`} />
+            {loading ? "Salvando..." : "Salvar"}
           </button>
         </div>
       </form>

@@ -22,7 +22,7 @@ const AppointmentDetails = ({ appointment, clientId, animalId, onClose }) => {
   }
 
   return (
-    <div className="bg-white rounded-2xl overflow-hidden max-w-2xl w-full mx-auto shadow-2xl flex flex-col max-h-[90vh]">
+    <div className="bg-white rounded-2xl overflow-hidden max-w-[1200px] w-full mx-auto shadow-2xl flex flex-col max-h-[90vh]">
       {/* Header */}
       <div className="bg-slate-50 border-b border-slate-100 p-6 flex justify-between items-start shrink-0">
         <div className="flex items-center gap-3">

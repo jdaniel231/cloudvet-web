@@ -10,6 +10,7 @@ import Modal from "../../components/common/Modal";
 export default function Edit() {
   const { id } = useParams();
   const [vaccineType, setVaccineType] = useState(null);
+  const [isSaving, setIsSaving] = useState(false);
   const [modalState, setModalState] = useState({
     show: false,
     title: "",
@@ -46,6 +47,7 @@ export default function Edit() {
   }, [modalState.show, modalState.type, navigate]);
 
   const handleSubmit = async (vaccineTypeData) => {
+    setIsSaving(true);
     try {
       await updateVaccineType(id, vaccineTypeData);
       console.log("Tipo de vacina atualizado com sucesso!");
@@ -65,6 +67,8 @@ export default function Edit() {
           "Ocorreu um erro ao atualizar o tipo de vacina. Tente novamente.",
         type: "error",
       });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -81,12 +85,13 @@ export default function Edit() {
 
   return (
     <>
-      <div className="w-full max-w-4xl mx-auto p-4 md:p-8 flex justify-center">
+      <div className="w-full mx-auto p-4 md:p-8 flex justify-center">
         {vaccineType && (
           <VaccineTypeForm
             initialData={vaccineType}
             onSubmit={handleSubmit}
             onCancel={handleCancel}
+            loading={isSaving}
           />
         )}
       </div>

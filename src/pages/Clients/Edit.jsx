@@ -102,7 +102,7 @@ const EditClient = () => {
 
   return (
     <>
-      <div className="container mx-auto p-4">
+      <div className="w-full mx-auto p-4">
         <h1 className="text-3xl font-bold text-text mb-6">Editar Cliente</h1>
         <div className="bg-card shadow-md rounded-lg p-6">
           {client && (

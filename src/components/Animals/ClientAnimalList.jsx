@@ -24,7 +24,7 @@ const ClientAnimalList = ({ animals, clientId, onAnimalDeleted }) => {
       type: "confirmation",
       onConfirm: async () => {
         try {
-          await deleteAnimal(clientId, animalId);
+          await deleteAnimal(animalId);
           onAnimalDeleted(animalId);
           setModalState({
             show: false,

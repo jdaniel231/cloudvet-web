@@ -5,6 +5,7 @@ import VaccineTypeForm from "../../components/VaccineTypes/Form";
 import Modal from "../../components/common/Modal";
 
 export default function New() {
+  const [isSaving, setIsSaving] = useState(false);
   const [modalState, setModalState] = useState({
     show: false,
     title: "",
@@ -27,6 +28,7 @@ export default function New() {
   }, [modalState.show, modalState.type, navigate]);
 
   const handleSubmit = async (formData) => {
+    setIsSaving(true);
     try {
       await createVaccineType(formData);
       setModalState({
@@ -45,6 +47,8 @@ export default function New() {
           "Ocorreu um erro ao cadastrar o tipo de vacina. Tente novamente.",
         type: "error",
       });
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -60,8 +64,12 @@ export default function New() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto p-4 md:p-8 flex justify-center">
-      <VaccineTypeForm onSubmit={handleSubmit} onCancel={handleCancel} />
+    <div className="w-full mx-auto p-4 md:p-8 flex justify-center">
+      <VaccineTypeForm
+        onSubmit={handleSubmit}
+        onCancel={handleCancel}
+        loading={isSaving}
+      />
       <Modal
         show={modalState.show}
         onClose={handleCloseModal}

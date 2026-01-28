@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import {
-  getAppointments,
+  getAppointmentsByAnimal,
   deleteAppointment,
   getAppointmentById,
 } from "../../services/appoint";
@@ -42,7 +42,7 @@ const ConsultationHistory = () => {
 
   const fetchConsultations = useCallback(async () => {
     try {
-      const consultationsData = await getAppointments(clientId, animalId);
+      const consultationsData = await getAppointmentsByAnimal(animalId);
       // Sort by date descending
       const sorted = consultationsData?.sort((a, b) =>
         new Date(b.created_at) - new Date(a.created_at)
@@ -51,21 +51,17 @@ const ConsultationHistory = () => {
     } catch (err) {
       console.error(err);
     }
-  }, [clientId, animalId]);
+  }, [animalId]);
 
   useEffect(() => {
-    if (clientId && animalId) {
+    if (animalId) {
       fetchConsultations();
     }
-  }, [clientId, animalId, fetchConsultations]);
+  }, [animalId, fetchConsultations]);
 
   const handleView = async (appointmentId) => {
     try {
-      const appointmentData = await getAppointmentById(
-        clientId,
-        animalId,
-        appointmentId,
-      );
+      const appointmentData = await getAppointmentById(appointmentId);
       setViewModalState({ show: true, appointment: appointmentData });
     } catch (error) {
       console.error("Erro ao buscar detalhes da consulta:", error);
@@ -87,7 +83,7 @@ const ConsultationHistory = () => {
       type: "confirmation",
       onConfirm: async () => {
         try {
-          await deleteAppointment(clientId, animalId, appointmentId);
+          await deleteAppointment(appointmentId);
           fetchConsultations();
           setModalState({
             show: false,
@@ -224,12 +220,12 @@ const ConsultationHistory = () => {
                     </button>
 
                     <Link
-                      to={`/ clients / ${clientId} /animals/${animalId} /appointments/${item.id}/edit`}
+                      to={`/clients/${clientId}/animals/${animalId}/appointments/${item.id}/edit`}
                       className="p-2 text-slate-300 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors md:opacity-0 md:group-hover:opacity-100"
                       title="Editar"
                     >
                       <Pen className="h-4 w-4" />
-                    </Link >
+                    </Link>
 
                     <button
                       onClick={() => handleDelete(item.id)}

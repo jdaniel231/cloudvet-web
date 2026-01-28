@@ -23,6 +23,7 @@ import {
   Syringe,
   FilePlus,
   LucideHospital,
+  Ticket,
 } from "lucide-react";
 import Breadcrumbs from "../common/Breadcrumbs";
 
@@ -212,7 +213,7 @@ export default function MainLayout({ children }) {
       }
       if (animalId) {
         try {
-          const animal = await getAnimalById(clientId, animalId);
+          const animal = await getAnimalById(animalId);
           newNameMap[animalId] = animal.name;
         } catch (error) {
           console.error("Error fetching animal name:", error);
@@ -265,6 +266,11 @@ export default function MainLayout({ children }) {
       ],
     },
     {
+      name: "Tickets",
+      path: "/tickets",
+      icon: <Ticket className="h-5 w-5" />,
+    },
+    {
       id: "settings",
       name: "Configurações",
       path: "/settings",
@@ -294,7 +300,7 @@ export default function MainLayout({ children }) {
           nameMap={nameMap}
         />
         <main className="flex-1 overflow-y-auto p-6 scroll-smooth">
-          <div className="max-w-7xl mx-auto h-full">
+          <div className="max-w-[1600px] mx-auto h-full">
             {children}
           </div>
         </main>

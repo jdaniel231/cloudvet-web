@@ -1,6 +1,7 @@
 import { api } from "./api";
 import { handleApiCall } from "./apiUtils";
 
+// CRIAÇÃO: Continua precisando do clientId para saber de quem é o animal
 export const createAnimalForClient = async (clientId, animalData) => {
   return handleApiCall(
     () => api.post(`/clients/${clientId}/animals`, { animal: animalData }),
@@ -8,23 +9,34 @@ export const createAnimalForClient = async (clientId, animalData) => {
   );
 };
 
-export const getAnimalById = async (clientId, animalId) => {
+// BUSCAR POR ID: Agora é direto, só precisa do animalId
+export const getAnimalById = async (animalId) => {
   return handleApiCall(
-    () => api.get(`/clients/${clientId}/animals/${animalId}`),
+    () => api.get(`/animals/${animalId}`),
     `Erro ao buscar animal com ID ${animalId}:`
   );
 };
 
-export const updateAnimal = async (clientId, animalId, animalData) => {
+// ATUALIZAR: Agora é direto, só precisa do animalId
+export const updateAnimal = async (animalId, animalData) => {
   return handleApiCall(
-    () => api.put(`/clients/${clientId}/animals/${animalId}`, { animal: animalData }),
+    () => api.put(`/animals/${animalId}`, { animal: animalData }),
     `Erro ao atualizar animal com ID ${animalId}:`
   );
 };
 
-export const deleteAnimal = async (clientId, animalId) => {
+// EXCLUIR: Agora é direto, só precisa do animalId
+export const deleteAnimal = async (animalId) => {
   return handleApiCall(
-    () => api.delete(`/clients/${clientId}/animals/${animalId}`),
+    () => api.delete(`/animals/${animalId}`),
     `Erro ao excluir animal com ID ${animalId}:`
+  );
+};
+
+// BUSCAR POR CLIENTE
+export const getAnimalsByClient = async (clientId) => {
+  return handleApiCall(
+    () => api.get(`/clients/${clientId}/animals`),
+    `Erro ao buscar animais do cliente com ID ${clientId}:`
   );
 };

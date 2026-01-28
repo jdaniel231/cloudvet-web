@@ -53,7 +53,7 @@ export default function NewClient() {
 
   return (
     <>
-      <div className="w-full max-w-4xl mx-auto p-6">
+      <div className="w-full mx-auto p-6">
         <div className="flex items-center gap-3 mb-8">
           <h1 className="text-3xl font-bold text-slate-800">Novo Cliente</h1>
           <div className="h-px bg-slate-200 flex-1 ml-4" />
