@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import { deleteVaccine, getVaccines } from "../../services/vaccine";
+import { deleteVaccine, getVaccinesByAnimal } from "../../services/vaccine";
 import Modal from "../common/Modal";
 import { Syringe, Plus, Trash, Calendar, User, AlertCircle, CheckCircle2 } from "lucide-react";
 
@@ -19,7 +19,7 @@ const VaccineHistory = () => {
 
   const fetchVaccines = useCallback(async () => {
     try {
-      const vaccinesData = await getVaccines(clientId, animalId);
+      const vaccinesData = await getVaccinesByAnimal(animalId);
       // Sort by application date descending
       const sorted = vaccinesData?.sort((a, b) =>
         new Date(b.application_date) - new Date(a.application_date)
@@ -28,7 +28,7 @@ const VaccineHistory = () => {
     } catch (error) {
       console.error(error);
     }
-  }, [clientId, animalId]);
+  }, [animalId]);
 
   useEffect(() => {
     fetchVaccines();
@@ -42,7 +42,7 @@ const VaccineHistory = () => {
       type: "confirmation",
       onConfirm: async () => {
         try {
-          await deleteVaccine(clientId, animalId, vaccineId);
+          await deleteVaccine(vaccineId);
           fetchVaccines();
           setModalState({
             show: false,
@@ -108,7 +108,7 @@ const VaccineHistory = () => {
             <div className="hidden md:grid grid-cols-12 gap-4 p-4 border-b border-slate-100 bg-slate-50/50 text-xs font-bold text-slate-400 uppercase tracking-wider">
               <div className="col-span-4 pl-2">Vacina / Veterinário</div>
               <div className="col-span-3">Data Aplicação</div>
-              <div className="col-span-3">Data Reforço</div>
+              <div className="col-span-3">Prox. Reforço</div>
               <div className="col-span-2 text-right pr-2">Ações</div>
             </div>
 

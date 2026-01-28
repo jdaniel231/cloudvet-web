@@ -19,11 +19,7 @@ const EditAppointment = () => {
   useEffect(() => {
     const fetchAppointment = async () => {
       try {
-        const data = await getAppointmentById(
-          clientId,
-          animalId,
-          appointmentId,
-        );
+        const data = await getAppointmentById(appointmentId);
         setInitialData(data);
       } catch (error) {
         console.error("Erro ao buscar dados da consulta:", error);
@@ -41,7 +37,7 @@ const EditAppointment = () => {
 
   const handleSubmit = async (formData) => {
     try {
-      await updateAppointment(clientId, animalId, appointmentId, formData);
+      await updateAppointment(appointmentId, formData);
       setModalState({
         show: true,
         title: "Sucesso!",

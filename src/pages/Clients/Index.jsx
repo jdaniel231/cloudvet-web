@@ -13,6 +13,7 @@ import {
   Cat,
   PawPrint
 } from "lucide-react";
+import DataTable from "../../components/common/DataTable";
 
 export default function Clients() {
   const navigate = useNavigate();
@@ -112,8 +113,89 @@ export default function Clients() {
     };
   };
 
+  const columns = [
+    {
+      header: "Cliente",
+      key: "name",
+      render: (client) => (
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-violet-100 text-indigo-600 flex items-center justify-center font-bold text-sm shadow-sm border border-indigo-100/50">
+            {getInitials(client.name)}
+          </div>
+          <div>
+            <h3 className="font-bold text-slate-700 text-sm group-hover:text-indigo-700 transition-colors">
+              {client.name}
+            </h3>
+            <p className="text-xs text-slate-400">
+              {client.contact || "Sem contato"}
+            </p>
+          </div>
+        </div>
+      ),
+    },
+    {
+      header: "Animais Associados",
+      key: "animals",
+      render: (client) => {
+        const animals = getAnimalNames(client);
+        return animals.length > 0 ? (
+          <div className="flex flex-wrap gap-2">
+            {animals.map((animal, index) => {
+              const style = getAnimalStyle(animal.species);
+              const Icon = style.icon;
+
+              return animal.id ? (
+                <Link
+                  key={animal.id}
+                  to={`/clients/${client.id}/animals/${animal.id}`}
+                  className={`flex items-center gap-1.5 px-3 py-1 ${style.bg} ${style.hoverBg} ${style.text} hover:text-opacity-80 text-xs font-semibold rounded-full transition-colors border ${style.border}`}
+                >
+                  <Icon className="h-3 w-3" />
+                  {animal.name}
+                </Link>
+              ) : (
+                <span
+                  key={index}
+                  className="px-2 py-1 bg-slate-100 text-slate-500 text-xs rounded-full"
+                >
+                  {animal.name}
+                </span>
+              );
+            })}
+          </div>
+        ) : (
+          <span className="text-slate-400 text-xs italic">
+            Nenhum animal cadastrado
+          </span>
+        );
+      },
+    },
+    {
+      header: "Ações",
+      align: "right",
+      render: (client) => (
+        <div className="flex items-center justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
+          <Link
+            to={`/clients/${client.id}`}
+            className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
+            title="Ver Detalhes"
+          >
+            <Eye className="h-4 w-4" />
+          </Link>
+          <button
+            onClick={() => alert(`Iniciar atendimento para ${client.name}`)}
+            className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
+            title="Iniciar Atendimento"
+          >
+            <Stethoscope className="h-4 w-4" />
+          </button>
+        </div>
+      ),
+    },
+  ];
+
   return (
-    <div className="w-full max-w-[1920px] mx-auto p-6 space-y-8">
+    <div className="w-full mx-auto p-6 space-y-8">
       {/* Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
@@ -175,175 +257,59 @@ export default function Clients() {
 
       {/* Table Card */}
       <div className="bg-white rounded-2xl shadow-xl shadow-slate-200/50 border border-slate-100 overflow-hidden min-h-[400px] flex flex-col">
-        {loading && (
-          <div className="flex-1 flex flex-col items-center justify-center p-10 text-slate-400 gap-3">
-            <div className="w-8 h-8 border-4 border-indigo-500/30 border-t-indigo-500 rounded-full animate-spin" />
-            <p className="text-sm font-medium">Carregando dados...</p>
-          </div>
-        )}
+        <DataTable
+          columns={columns}
+          data={currentClients}
+          loading={loading}
+          errorMsg={errorMsg}
+          searchTerm={searchTerm}
+          emptyMessage="Nenhum cliente encontrado"
+          emptyIcon={Users}
+        />
 
-        {!loading && errorMsg && (
-          <div className="flex-1 flex flex-col items-center justify-center p-10 text-red-500 gap-2">
-            <p className="font-semibold">Erro</p>
-            <p className="text-sm">{errorMsg}</p>
-          </div>
-        )}
-
-        {!loading && !errorMsg && filteredClients.length === 0 && (
-          <div className="flex-1 flex flex-col items-center justify-center p-10 text-slate-400 gap-3">
-            <div className="p-4 bg-slate-50 rounded-full">
-              <Search className="h-8 w-8 text-slate-300" />
-            </div>
-            <p className="font-medium">Nenhum cliente encontrado</p>
-            <button onClick={() => setSearchTerm("")} className="text-indigo-600 text-sm font-semibold hover:underline">
-              Limpar busca
-            </button>
-          </div>
-        )}
-
-        {!loading && !errorMsg && filteredClients.length > 0 && (
-          <>
-            <div className="overflow-x-auto">
-              <table className="min-w-full">
-                <thead>
-                  <tr className="bg-slate-50/50 border-b border-slate-100">
-                    <th className="py-4 px-6 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">
-                      Cliente
-                    </th>
-                    <th className="py-4 px-6 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">
-                      Animais Associados
-                    </th>
-                    <th className="py-4 px-6 text-right text-xs font-bold text-slate-400 uppercase tracking-wider">
-                      Ações
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {currentClients.map((client) => {
-                    const animals = getAnimalNames(client);
-                    return (
-                      <tr key={client.id} className="group hover:bg-slate-50/80 transition-colors">
-                        <td className="py-4 px-6">
-                          <div className="flex items-center gap-4">
-                            <div className="w-10 h-10 rounded-full bg-gradient-to-br from-indigo-100 to-violet-100 text-indigo-600 flex items-center justify-center font-bold text-sm shadow-sm border border-indigo-100/50">
-                              {getInitials(client.name)}
-                            </div>
-                            <div>
-                              <h3 className="font-bold text-slate-700 text-sm group-hover:text-indigo-700 transition-colors">
-                                {client.name}
-                              </h3>
-                              <p className="text-xs text-slate-400">
-                                {client.contact || "Sem contato"}
-                              </p>
-                            </div>
-                          </div>
-                        </td>
-
-                        <td className="py-4 px-6">
-                          {animals.length > 0 ? (
-                            <div className="flex flex-wrap gap-2">
-                              {animals.map((animal, index) => {
-                                const style = getAnimalStyle(animal.species);
-                                const Icon = style.icon;
-
-                                return animal.id ? (
-                                  <Link
-                                    key={animal.id}
-                                    to={`/clients/${client.id}/animals/${animal.id}`}
-                                    className={`flex items-center gap-1.5 px-3 py-1 ${style.bg} ${style.hoverBg} ${style.text} hover:text-opacity-80 text-xs font-semibold rounded-full transition-colors border ${style.border}`}
-                                  >
-                                    <Icon className="h-3 w-3" />
-                                    {animal.name}
-                                  </Link>
-                                ) : (
-                                  <span
-                                    key={index}
-                                    className="px-2 py-1 bg-slate-100 text-slate-500 text-xs rounded-full"
-                                  >
-                                    {animal.name}
-                                  </span>
-                                );
-                              })}
-                            </div>
-                          ) : (
-                            <span className="text-slate-400 text-xs italic">
-                              Nenhum animal cadastrado
-                            </span>
-                          )}
-                        </td>
-
-                        <td className="py-4 px-6">
-                          <div className="flex items-center justify-end gap-2 opacity-60 group-hover:opacity-100 transition-opacity">
-                            <Link
-                              to={`/clients/${client.id}`}
-                              className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all"
-                              title="Ver Detalhes"
-                            >
-                              <Eye className="h-4 w-4" />
-                            </Link>
-                            <button
-                              onClick={() => alert(`Iniciar atendimento para ${client.name}`)}
-                              className="p-2 text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 rounded-lg transition-all"
-                              title="Iniciar Atendimento"
-                            >
-                              <Stethoscope className="h-4 w-4" />
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+        {!loading && !errorMsg && filteredClients.length > 0 && totalPages > 1 && (
+          <div className="p-4 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
+            <div className="text-xs text-slate-400 font-medium">
+              Mostrando <span className="text-slate-700">{indexOfFirstClient + 1}</span> - <span className="text-slate-700">{Math.min(indexOfLastClient, filteredClients.length)}</span> de <span className="text-slate-700">{filteredClients.length}</span>
             </div>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-              <div className="p-4 border-t border-slate-100 flex items-center justify-between bg-slate-50/50">
-                <div className="text-xs text-slate-400 font-medium">
-                  Mostrando <span className="text-slate-700">{indexOfFirstClient + 1}</span> - <span className="text-slate-700">{Math.min(indexOfLastClient, filteredClients.length)}</span> de <span className="text-slate-700">{filteredClients.length}</span>
-                </div>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => paginate(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="p-2 rounded-lg hover:bg-white hover:shadow-sm text-slate-500 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:shadow-none transition-all"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
 
-                <div className="flex items-center gap-1">
+              {[...Array(totalPages).keys()].map((number) => {
+                const page = number + 1;
+                return (
                   <button
-                    onClick={() => paginate(currentPage - 1)}
-                    disabled={currentPage === 1}
-                    className="p-2 rounded-lg hover:bg-white hover:shadow-sm text-slate-500 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:shadow-none transition-all"
+                    key={page}
+                    onClick={() => paginate(page)}
+                    className={`
+                        w-8 h-8 rounded-lg text-xs font-bold transition-all
+                        ${currentPage === page
+                        ? "bg-slate-900 text-white shadow-md shadow-slate-900/20"
+                        : "text-slate-500 hover:bg-white hover:text-slate-900 hover:shadow-sm"
+                      }
+                      `}
                   >
-                    <ChevronLeft className="h-4 w-4" />
+                    {page}
                   </button>
+                );
+              })}
 
-                  {[...Array(totalPages).keys()].map((number) => {
-                    const page = number + 1;
-                    // Simple logic to show limited pages could go here, for now showing all as per original
-                    return (
-                      <button
-                        key={page}
-                        onClick={() => paginate(page)}
-                        className={`
-                            w-8 h-8 rounded-lg text-xs font-bold transition-all
-                            ${currentPage === page
-                            ? "bg-slate-900 text-white shadow-md shadow-slate-900/20"
-                            : "text-slate-500 hover:bg-white hover:text-slate-900 hover:shadow-sm"
-                          }
-                          `}
-                      >
-                        {page}
-                      </button>
-                    );
-                  })}
-
-                  <button
-                    onClick={() => paginate(currentPage + 1)}
-                    disabled={currentPage === totalPages}
-                    className="p-2 rounded-lg hover:bg-white hover:shadow-sm text-slate-500 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:shadow-none transition-all"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </button>
-                </div>
-              </div>
-            )}
-          </>
+              <button
+                onClick={() => paginate(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded-lg hover:bg-white hover:shadow-sm text-slate-500 disabled:opacity-30 disabled:hover:bg-transparent disabled:hover:shadow-none transition-all"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
         )}
       </div>
     </div>

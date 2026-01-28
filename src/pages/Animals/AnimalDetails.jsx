@@ -4,10 +4,11 @@ import AnimalDetailsLayout from "../../components/Animals/AnimalDetailsLayout";
 import ConsultationHistory from "../../components/Appointments/ConsultationHistory";
 import ActionButtons from "../../components/Animals/ActionButtons";
 import WeightHistory from "../../components/Weights/WeightHistory";
-import { getWeights, createWeight } from "../../services/weight";
+import { getWeightsByAnimal, createWeight } from "../../services/weight";
 import Modal from "../../components/common/Modal";
 import WeightsForm from "../../components/Weights/Form";
 import VaccineHistory from "../../components/Vaccines/VaccineHistory";
+import TicketHistory from "../../components/Tickets/TicketHistory";
 
 const AnimalDetails = () => {
   const { clientId, animalId } = useParams();
@@ -18,12 +19,12 @@ const AnimalDetails = () => {
 
   const fetchWeights = useCallback(async () => {
     try {
-      const weightsData = await getWeights(clientId, animalId);
+      const weightsData = await getWeightsByAnimal(animalId);
       setWeights(weightsData);
     } catch (error) {
       console.error("Failed to fetch weights:", error);
     }
-  }, [clientId, animalId]);
+  }, [animalId]);
 
   useEffect(() => {
     fetchWeights();
@@ -31,7 +32,7 @@ const AnimalDetails = () => {
 
   const handleAddWeight = async (formData) => {
     try {
-      await createWeight(clientId, animalId, formData);
+      await createWeight(animalId, formData, clientId);
       fetchWeights(); // Re-fetch weights to update the list
       setIsModalOpen(false);
     } catch (error) {
@@ -49,6 +50,8 @@ const AnimalDetails = () => {
         );
       case "vaccines":
         return <VaccineHistory />;
+      case "tickets":
+        return <TicketHistory />;
       default:
         return <ConsultationHistory />;
     }

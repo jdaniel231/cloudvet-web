@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Weight, Plus, Trash, Calendar, User, TrendingUp } from "lucide-react";
 import { useParams } from "react-router-dom";
-import { deleteWeight, getWeights } from "../../services/weight";
+import { deleteWeight, getWeightsByAnimal } from "../../services/weight";
 import Modal from "../common/Modal";
 
 const WeightHistory = ({ weights, onAdd }) => {
@@ -31,8 +31,8 @@ const WeightHistory = ({ weights, onAdd }) => {
       type: "confirmation",
       onConfirm: async () => {
         try {
-          await deleteWeight(clientId, animalId, weightId);
-          const updatedWeights = await getWeights(clientId, animalId);
+          await deleteWeight(weightId);
+          const updatedWeights = await getWeightsByAnimal(animalId);
           // Sort by date descending
           const sorted = updatedWeights?.sort((a, b) =>
             new Date(b.created_at) - new Date(a.created_at)

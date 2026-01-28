@@ -13,11 +13,7 @@ const ShowAppointment = () => {
   useEffect(() => {
     const fetchAppointment = async () => {
       try {
-        const data = await getAppointmentById(
-          clientId,
-          animalId,
-          appointmentId,
-        );
+        const data = await getAppointmentById(appointmentId);
         setAppointment(data);
       } catch (err) {
         setError(err.message);

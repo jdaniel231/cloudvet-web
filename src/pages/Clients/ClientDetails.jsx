@@ -3,6 +3,7 @@ import { Link, useParams } from "react-router-dom";
 import { getClientById, getClientAnimals } from "../../services/client";
 import ClientAnimalList from "../../components/Animals/ClientAnimalList";
 import { User, Mail, Phone, Edit, Plus, PawPrint, Activity, Calendar } from "lucide-react";
+import { getAnimalsByClient } from "../../services/animal";
 
 const ClientDetails = () => {
   const { id } = useParams();
@@ -18,7 +19,7 @@ const ClientDetails = () => {
         const clientData = await getClientById(id);
         setClient(clientData);
 
-        const animalsData = await getClientAnimals(id);
+        const animalsData = await getAnimalsByClient(id);
         setAnimals(animalsData);
       } catch (err) {
         setError("Erro ao carregar os dados do cliente e seus animais.");
@@ -65,7 +66,7 @@ const ClientDetails = () => {
   }
 
   return (
-    <div className="w-full max-w-[1920px] mx-auto p-6 md:p-8 space-y-8">
+    <div className="w-full mx-auto p-6 md:p-8 space-y-8">
       {/* Hero Banner / Client Header */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-cyan-900 to-cyan-950 shadow-premium text-white">
         <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl -mr-20 -mt-20"></div>

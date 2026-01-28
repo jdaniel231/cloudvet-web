@@ -79,7 +79,7 @@ export default function Edit() {
 
   return (
     <>
-      <div className="w-full max-w-4xl mx-auto p-4 md:p-8 flex justify-center">
+      <div className="w-full mx-auto p-4 md:p-8 flex justify-center">
         {clinicService ? (
           <ClinicServiceForm
             initialData={clinicService}

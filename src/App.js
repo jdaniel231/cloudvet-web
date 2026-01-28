@@ -27,6 +27,9 @@ import NewVaccine from "./pages/Vaccines/New";
 import ClinicServicesIndex from "./pages/ClinicServices/Index";
 import NewClinicService from "./pages/ClinicServices/New";
 import EditClinicaService from "./pages/ClinicServices/Edit";
+import TicketsIndex from "./pages/Tickets/Index";
+import NewTicket from "./pages/Tickets/New";
+import TicketEdit from "./pages/Tickets/Edit";
 
 function App() {
   return (
@@ -81,6 +84,15 @@ function App() {
             path="/clients/:clientId/animals/:animalId/vaccines/new"
             element={<NewVaccine />}
           />
+          <Route
+            path="/clients/:clientId/animals/:animalId/tickets/new"
+            element={<NewTicket />}
+          />
+          <Route
+            path="/clients/:clientId/animals/:animalId/tickets/:ticketId/edit"
+            element={<TicketEdit />}
+          />
+          <Route path="/tickets" element={<TicketsIndex />} />
         </Route>
 
         {/* Rota padrão: redireciona para o dashboard se logado, senão para o login */}

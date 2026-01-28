@@ -1,8 +1,9 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { deleteClinicService, getClinicServices } from "../../services/clinicService";
 import Modal from "../../components/common/Modal";
 import { Link } from "react-router-dom";
 import { AlertCircle, HospitalIcon, Pen, Plus, Search, Trash2 } from "lucide-react";
+import DataTable from "../../components/common/DataTable";
 
 export default function ClinicServicesIndex() {
   const [clinicServices, setClinicServices] = useState([]);
@@ -111,8 +112,56 @@ export default function ClinicServicesIndex() {
     type.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const columns = [
+    {
+      header: "Nome do Serviço",
+      key: "name",
+      render: (service) => (
+        <p className="font-bold text-slate-700 text-lg">{service.name}</p>
+      ),
+    },
+    {
+      header: "Custo",
+      key: "cost_value",
+      align: "right",
+      render: (service) => (
+        <p className="font-bold text-slate-700 text-lg">R$ {service.cost_value.toFixed(2)}</p>
+      ),
+    },
+    {
+      header: "Valor Total",
+      key: "total_value",
+      align: "right",
+      render: (service) => (
+        <p className="font-bold text-emerald-600 text-lg">R$ {service.total_value.toFixed(2)}</p>
+      ),
+    },
+    {
+      header: "Gerenciar",
+      align: "right",
+      render: (service) => (
+        <div className="flex justify-end items-center gap-3">
+          <Link
+            to={`/clinic_services/${service.id}/edit`}
+            className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200 group/edit"
+            title="Editar"
+          >
+            <Pen className="h-5 w-5 group-hover/edit:animate-bounce" />
+          </Link>
+          <button
+            onClick={() => handleDelete(service)}
+            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all duration-200 group/delete"
+            title="Excluir"
+          >
+            <Trash2 className="h-5 w-5 group-hover/delete:scale-110 transition-transform" />
+          </button>
+        </div>
+      ),
+    },
+  ];
+
   return (
-    <div className="w-full max-w-7xl mx-auto p-4 md:p-8 space-y-8 min-h-screen bg-slate-50/50">
+    <div className="w-full mx-auto p-4 md:p-8 space-y-8 min-h-screen bg-slate-50/50">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 bg-clip-text text-transparent">
@@ -156,89 +205,16 @@ export default function ClinicServicesIndex() {
             <span>{filteredTypes.length} Serviços</span>
           </div>
         </div>
-        <div className="relative min-h-[400px]">
-          {loading ? (
-            <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-10">
-              <div className="flex flex-col items-center gap-3">
-                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-cyan-600"></div>
-                <p className="text-slate-500 font-medium animate-pulse">Carregando dados...</p>
-              </div>
-            </div>
-          ) : errorMsg ? ( // Erro na API
-            <div className="flex flex-col items-center justify-center h-64 text-red-500 bg-red-50/50 m-4 rounded-2xl border border-red-100">
-              <AlertCircle className="h-10 w-10 mb-3" />
-              <p className="font-semibold">{errorMsg}</p>
-            </div>
-          ) : filteredTypes.length === 0 ? ( // Nenhum resultado
-            <div className="flex flex-col items-center justify-center h-64 text-slate-500">
-                <div className="bg-slate-100 p-6 rounded-full mb-4">
-                    <Search className="h-12 w-12 text-slate-400" />
-                </div>
-                <p className="text-lg font-medium text-slate-600">Nenhum serviço encontrado</p>
-                <p className="text-sm text-slate-400 mt-1">
-                    {searchTerm ? "Tente buscar por outro termo" : "Comece adicionando um novo serviço"}
-                </p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="bg-slate-50/50 border-b border-slate-100">
-                    <th className="py-5 px-6 text-left text-xs font-bold text-slate-400 uppercase tracking-wider">
-                      Nome do Serviço
-                    </th>
-                    <th className="py-5 px-6 text-right text-xs font-bold text-slate-400 uppercase tracking-wider">
-                      Custo
-                    </th>
-                    <th className="py-5 px-6 text-right text-xs font-bold text-slate-400 uppercase tracking-wider">
-                      Valor Total
-                    </th>
-                    <th className="py-5 px-6 text-right text-xs font-bold text-slate-400 uppercase tracking-wider">
-                      Gerenciar
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {filteredTypes.map((service) => (
-                    <tr
-                      key={service.id}
-                      className="group hover:bg-slate-50/80 transition-colors duration-200"
-                    >
-                      <td className="py-4 px-6">
-                        <p className="font-bold text-slate-700 text-lg">{service.name}</p>
-                        {/* If we had description, it would go here */}
-                      </td>
-                      <td className="py-4 px-6 text-right">
-                        <p className="font-bold text-slate-700 text-lg">R$ {service.cost_value.toFixed(2)}</p>
-                      </td>
-                      <td className="py-4 px-6 text-right">
-                        <p className="font-bold text-emerald-600 text-lg">R$ {service.total_value.toFixed(2)}</p>
-                      </td>
-                      <td className="py-4 px-6">
-                        <div className="flex justify-end items-center gap-3">
-                          <Link
-                            to={`/clinic_services/${service.id}/edit`}
-                            className="p-2 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-all duration-200 group/edit"
-                            title="Editar"
-                          >
-                            <Pen className="h-5 w-5 group-hover/edit:animate-bounce" />
-                          </Link>
-                          <button
-                            onClick={() => handleDelete(service)}
-                            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-all duration-200 group/delete"
-                            title="Excluir"
-                          >
-                            <Trash2 className="h-5 w-5 group-hover/delete:scale-110 transition-transform" />
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </div>
+
+        <DataTable
+          columns={columns}
+          data={filteredTypes}
+          loading={loading}
+          errorMsg={errorMsg}
+          searchTerm={searchTerm}
+          emptyMessage="Nenhum serviço encontrado"
+          emptyIcon={HospitalIcon}
+        />
       </div>
 
       {/* Modal Component */}
